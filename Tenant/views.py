@@ -31,6 +31,12 @@ def login(request):
         del request.session['verified_email']
     return render(request, 'login.html')
 
+def new_login(request):
+    # Clear any existing session data
+    if 'verified_email' in request.session:
+        del request.session['verified_email']
+    return render(request, 'new_login.html')
+
 def logout_view(request):
     logout(request)
     if 'verified_email' in request.session:
@@ -448,3 +454,44 @@ def verify_otp(request):
     except Exception as e:
         logger.error(f"OTP verification error: {str(e)}")
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+def payment(request):
+    """
+    View for handling the payment page for police verification
+    """
+    tenant_id = request.GET.get('tenant_id')
+    tenant = None
+    
+    if tenant_id:
+        try:
+            tenant = Tenant.objects.get(id=tenant_id)
+        except Tenant.DoesNotExist:
+            messages.error(request, "Tenant not found")
+            return redirect('Policedashboard')
+    
+    return render(request, 'Payment.html', {'tenant': tenant})
+
+def process_payment(request):
+    """
+    Process the payment for police verification
+    """
+    if request.method == 'POST':
+        tenant_id = request.POST.get('tenant_id')
+        payment_method = request.POST.get('payment_method')
+        amount = request.POST.get('amount')
+        
+        # In a real scenario, you would process the payment with a payment gateway
+        # For now, we'll just mark the tenant as verified
+        
+        try:
+            tenant = Tenant.objects.get(id=tenant_id)
+            tenant.police_status = 'approved'
+            tenant.save()
+            
+            messages.success(request, "Payment successful! Tenant has been verified.")
+            return redirect('Policedashboard')
+            
+        except Tenant.DoesNotExist:
+            messages.error(request, "Tenant not found")
+    
+    return redirect('payment')

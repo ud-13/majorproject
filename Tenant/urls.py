@@ -24,7 +24,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('index/', views.index, name='index'),
-    path('', views.login, name='login'),
+    path('', views.new_login, name='login'),
     path('Registration/', views.Registration, name='Registration'),
     path('ApplicationStatus/', views.ApplicationStatus, name='ApplicationStatus'),
     path('signup_Homeowner/', views.signup_homeowner, name='signup_Homeowner'),
@@ -37,6 +37,8 @@ urlpatterns = [
     path('verify-otp/', views.verify_otp, name='verify_otp'),
     path('check-verification/', views.check_verification, name='check_verification'),
     path('logout/', views.logout_view, name='logout'),
+    path('payment/', views.payment, name='payment'),
+    path('process-payment/', views.process_payment, name='process_payment'),
 ]
 
 # Serve media files in development
