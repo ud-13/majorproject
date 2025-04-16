@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Owner Dashboard - Tenant Verification System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1>Home Owner Dashboard</h1>
+            <div>
+                <a href="/index/?role=home_owner" class="btn btn-outline-light me-2">Home</a>
+                <a href="/logout/" class="btn btn-outline-light">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card profile-card">
+                    <div class="card-body text-center">
+                        <div class="profile-icon mb-3">
+                            <i data-feather="user"></i>
+                        </div>
+                        
+                        {% if owner %}
+                            <h3 class="mb-0">{{ owner.first_name }} {{ owner.last_name }}</h3>
+                            <p class="text-muted">Home Owner</p>
+                            
+                            <div class="profile-details mt-4">
+                                <div class="detail-item">
+                                    <i data-feather="phone" class="icon-sm me-2"></i>
+                                    <span>{{ owner.phone }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i data-feather="mail" class="icon-sm me-2"></i>
+                                    <span>{{ owner.user.email }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <i data-feather="calendar" class="icon-sm me-2"></i>
+                                    <span>{{ owner.date_of_birth|date:"F d, Y" }}</span>
+                                </div>
+                            </div>
+                        {% else %}
+                            <h3 class="mb-0">Welcome, Home Owner</h3>
+                            <p class="text-muted">Complete your profile information.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">Tenant Applications</h3>
+                    </div>
+                    <div class="card-body">
+                        {% if tenants %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Phone</th>
+                                            <th>District</th>
+                                            <th>Status</th>
+                                            <th>Submitted</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for tenant in tenants %}
+                                            <tr>
+                                                <td>{{ tenant.first_name }} {{ tenant.last_name }}</td>
+                                                <td>{{ tenant.tenant_phone_number }}</td>
+                                                <td>{{ tenant.district }}</td>
+                                                <td>
+                                                    {% if tenant.status == 'pending' %}
+                                                        <span class="badge bg-warning text-dark">Pending</span>
+                                                    {% elif tenant.status == 'approved' %}
+                                                        {% if tenant.police_status == 'pending' %}
+                                                            <span class="badge bg-info">Police Verification Pending</span>
+                                                        {% elif tenant.police_status == 'approved' %}
+                                                            <span class="badge bg-success">Approved</span>
+                                                        {% else %}
+                                                            <span class="badge bg-danger">Rejected by Police</span>
+                                                        {% endif %}
+                                                    {% else %}
+                                                        <span class="badge bg-danger">Rejected</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ tenant.created_at|date:"M d, Y" }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <i data-feather="users"></i>
+                                </div>
+                                <h4>No Tenant Applications</h4>
+                                <p class="text-muted">You don't have any tenant applications linked to your phone number yet.</p>
+                                <p>Once tenants list your phone number in their applications, they will appear here.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3 class="mb-0">Document Verification</h3>
+                    </div>
+                    <div class="card-body">
+                        {% if owner %}
+                            <div class="document-list">
+                                <div class="document-item">
+                                    <div class="document-icon bg-light text-primary">
+                                        <i data-feather="file-text"></i>
+                                    </div>
+                                    <div class="document-details">
+                                        <h5>Aadhar Card</h5>
+                                        <p class="text-muted mb-0">{{ owner.aadhar_number }}</p>
+                                    </div>
+                                    <div class="document-status verified">
+                                        <i data-feather="check-circle"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="document-item">
+                                    <div class="document-icon bg-light text-primary">
+                                        <i data-feather="file"></i>
+                                    </div>
+                                    <div class="document-details">
+                                        <h5>Sikkim Certificate</h5>
+                                        <p class="text-muted mb-0">Verified</p>
+                                    </div>
+                                    <div class="document-status verified">
+                                        <i data-feather="check-circle"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="document-item">
+                                    <div class="document-icon bg-light text-primary">
+                                        <i data-feather="home"></i>
+                                    </div>
+                                    <div class="document-details">
+                                        <h5>Land Parcha</h5>
+                                        <p class="text-muted mb-0">Verified</p>
+                                    </div>
+                                    <div class="document-status verified">
+                                        <i data-feather="check-circle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-warning mb-0">
+                                <i data-feather="alert-circle" class="me-2"></i>
+                                Please complete your profile by providing all required documents.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script>
+        // Initialize Feather icons
+        feather.replace();
+        
+        $(document).ready(function() {
+            // Check verification status
+            $.ajax({
+                url: '/check-verification/',
+                type: 'GET',
+                success: function(response) {
+                    if (!response.verified) {
+                        window.location.href = '/';
+                    }
+                },
+                error: function() {
+                    window.location.href = '/';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

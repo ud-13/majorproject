@@ -1,0 +1,433 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Police Dashboard - Sikkim Tenant Verification Portal</title>
+    <link rel="stylesheet" href="{% static 'css/header_footer.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f0f4f8;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Main Container */
+        .dashboard-container {
+            max-width: 1300px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            background: linear-gradient(135deg, #004d40 0%, #00796b 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2.25rem;
+            font-weight: 600;
+        }
+
+        .dashboard-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Verification Requests Section */
+        .verification-requests {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .verification-requests h2 {
+            font-size: 1.75rem;
+            color: #00796b;
+            margin-bottom: 1.5rem;
+        }
+
+        .request-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .request-card {
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .request-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .request-card h3 {
+            font-size: 1.25rem;
+            color: #333;
+            margin-bottom: 0.75rem;
+        }
+
+        .request-card p {
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .request-card .status {
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+
+        .request-card .status.pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .request-card .status.approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .request-card .status.rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .request-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-view {
+            background-color: #00796b;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background-color: #004d40;
+        }
+
+        .btn-approve {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background-color: #218838;
+        }
+
+        .btn-reject {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background-color: #c82333;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .modal-content h2 {
+            font-size: 1.5rem;
+            color: #00796b;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-content .close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            color: #555;
+            cursor: pointer;
+        }
+
+        .modal-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-section h3 {
+            font-size: 1.25rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .modal-section p {
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-section img {
+            max-width: 150px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-top: 0.5rem;
+        }
+
+        .remark-section {
+            margin-top: 1.5rem;
+        }
+
+        .remark-section label {
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+
+        .remark-section textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            resize: vertical;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 1rem;
+            }
+
+            .request-list {
+                grid-template-columns: 1fr;
+            }
+
+            .request-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="signup-container">
+        <h2>Police Officer Sign Up</h2>
+        <form id="policeSignupForm" method="POST" action="{% url 'police_signup' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Name Fields (Horizontal Layout) -->
+            <div class="name-fields">
+                <!-- SHO First Name -->
+                <div class="form-group">
+                    <label for="sho-first-name">SHO First Name</label>
+                    <input type="text" id="sho-first-name" name="sho_first_name" required>
+                    <div class="error-message" id="shoFirstNameError"></div>
+                </div>
+
+                <!-- Middle Name -->
+                <div class="form-group">
+                    <label for="middle-name">Middle Name</label>
+                    <input type="text" id="middle-name" name="middle_name">
+                </div>
+
+                <!-- Last Name -->
+                <div class="form-group">
+                    <label for="last-name">Last Name</label>
+                    <input type="text" id="last-name" name="last_name" required>
+                    <div class="error-message" id="lastNameError"></div>
+                </div>
+            </div>
+
+            <!-- Outpost and Phone Number (Horizontal Layout) -->
+            <div class="horizontal-fields">
+                <!-- Outpost Name -->
+                <div class="form-group">
+                    <label for="outpost-name">Outpost Name</label>
+                    <input type="text" id="outpost-name" name="outpost_name" required>
+                    <div class="error-message" id="outpostNameError"></div>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="form-group">
+                    <label for="phone-number">Phone Number</label>
+                    <input type="tel" id="phone-number" name="phone_number" required pattern="[0-9]{10}">
+                    <div class="error-message" id="phoneNumberError"></div>
+                </div>
+            </div>
+
+            <!-- District and Pin Code (Horizontal Layout) -->
+            <div class="horizontal-fields">
+                <!-- District -->
+                <div class="form-group">
+                    <label for="district">District</label>
+                    <input type="text" id="district" name="district" required>
+                    <div class="error-message" id="districtError"></div>
+                </div>
+
+                <!-- Pin Code -->
+                <div class="form-group">
+                    <label for="pincode">Pin Code</label>
+                    <input type="text" id="pincode" name="pincode" required pattern="[0-9]{6}">
+                    <div class="error-message" id="pincodeError"></div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group submit-button-container">
+                <button type="submit" class="submit-button">Sign Up</button>
+            </div>
+        </form>
+    </div>
+    {% include 'footer.html' %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('policeSignupForm');
+            
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Clear previous errors
+                document.querySelectorAll('.error-message').forEach(el => {
+                    el.textContent = '';
+                    el.style.display = 'none';
+                });
+                
+                // Validate form
+                let isValid = true;
+                
+                // Required field validation
+                const requiredFields = [
+                    'sho_first_name', 'last_name', 'outpost_name', 
+                    'phone_number', 'district', 'pincode'
+                ];
+                
+                requiredFields.forEach(field => {
+                    const input = form.querySelector(`[name="${field}"]`);
+                    if (!input.value.trim()) {
+                        showError(`${field}Error`, 'This field is required');
+                        isValid = false;
+                    }
+                });
+                
+                // Phone number validation
+                const phoneNumber = form.querySelector('[name="phone_number"]');
+                if (phoneNumber && !/^\d{10}$/.test(phoneNumber.value)) {
+                    showError('phone_numberError', 'Enter a valid 10-digit phone number');
+                    isValid = false;
+                }
+                
+                // Pin code validation
+                const pincode = form.querySelector('[name="pincode"]');
+                if (pincode && !/^\d{6}$/.test(pincode.value)) {
+                    showError('pincodeError', 'Enter a valid 6-digit PIN code');
+                    isValid = false;
+                }
+                
+                if (!isValid) {
+                    // Scroll to first error
+                    const firstError = document.querySelector('.error-message:not(:empty)');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    return;
+                }
+                
+                // Submit form via AJAX
+                const formData = new FormData(form);
+                
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': form.querySelector('[name="csrfmiddlewaretoken"]').value
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Redirect to PoliceDashboard on success
+                        window.location.href = "{% url 'Policedashboard' %}";
+                    } else {
+                        // Show server-side errors
+                        if (data.error) {
+                            Object.entries(data.error).forEach(([field, message]) => {
+                                showError(`${field}Error`, message);
+                            });
+                        } else {
+                            alert('Signup failed. Please try again.');
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred. Please try again.');
+                });
+            });
+            
+            function showError(elementId, message) {
+                const errorElement = document.getElementById(elementId);
+                if (errorElement) {
+                    errorElement.textContent = message;
+                    errorElement.style.display = 'block';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

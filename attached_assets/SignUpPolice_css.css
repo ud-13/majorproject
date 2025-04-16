@@ -1,0 +1,98 @@
+/* Sign Up Container */
+.signup-container {
+    background-color: #fff;
+    padding: 100px 20px 80px; /* Adjusted padding for fixed header and footer */
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px; /* Adjusted width */
+    margin: 0 auto; /* Center the container */
+    font-family: 'Roboto', sans-serif; /* Consistent font */
+}
+
+.signup-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px; /* Adjusted header size */
+}
+
+/* Horizontal Name Fields */
+.name-fields {
+    display: flex;
+    gap: 10px; /* Adds spacing between the fields */
+}
+
+.name-fields .form-group {
+    flex: 1; /* Ensures all fields take equal width */
+}
+
+/* Horizontal Layout for Outpost/Phone and District/Pin Code */
+.horizontal-fields {
+    display: flex;
+    gap: 10px; /* Adds spacing between the fields */
+}
+
+.horizontal-fields .form-group {
+    flex: 1; /* Ensures all fields take equal width */
+}
+
+/* Form Group Styles */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+    font-weight: bold;
+}
+
+/* Half-width inputs for horizontal fields */
+.horizontal-fields .form-group input {
+    width: 100%; /* Full width within their container */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* Full-width inputs for name fields */
+.name-fields .form-group input {
+    width: 100%; /* Full width for name fields */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.form-group input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Submit Button Container */
+.submit-button-container {
+    display: flex;
+    justify-content: center; /* Center the button */
+}
+
+/* Submit Button */
+/* Submit Button */
+.submit-button {
+    width: auto; /* Adjust width to fit content */
+    padding: 10px 20px; /* Consistent padding */
+    background-color: #007bff; /* Primary color */
+    border: none;
+    border-radius: 4px; /* Rounded corners */
+    color: #fff; /* White text */
+    font-size: 16px; /* Consistent font size */
+    font-family: 'Roboto', sans-serif; /* Consistent font */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+.submit-button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}

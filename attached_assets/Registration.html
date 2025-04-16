@@ -1,0 +1,883 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenant Verification and Details Form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/header_footer.css' %}">
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .form-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+
+        h1, h2, h3 {
+            color: #1a73e8;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+
+        label.required:after {
+            content: " *";
+            color: #dc3545;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        input[type="tel"],
+        select,
+        textarea,
+        input[type="file"] {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus,
+        input[type="tel"]:focus,
+        select:focus,
+        textarea:focus,
+        input[type="file"]:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 5px rgba(26, 115, 232, 0.3);
+        }
+
+        .error {
+            color: #dc3545;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        input:invalid, select:invalid, textarea:invalid {
+            border-color: #dc3545;
+        }
+
+        /* Reduce Father's Name textbox width */
+        #fatherName {
+            max-width: 300px;
+        }
+
+        /* Reduce Phone Number textbox width */
+        #ownerPhoneNumber, #tenantPhoneNumber {
+            max-width: 200px;
+        }
+
+        /* Blue background for House Owner Phone Number section */
+        .phone-section {
+            background: #e3f2fd;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .member-entry,
+        .residency-record {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+
+        .member-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .member-count {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #1a73e8;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0d47a1;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .police-verification,
+        .signature-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .date-signature {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .signature-preview,
+        .uploaded-image {
+            margin-top: 1rem;
+            max-width: 150px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="form-container">
+        <h2>Tenant Verification and Details Form</h2>
+        <form id="tenantForm" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Personal Details Section -->
+<div class="form-section">
+    <h3>Personal Details</h3>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="firstName" class="required">First Name</label>
+            <input type="text" id="firstName" name="first_name" required>
+            <div class="error" id="firstNameError"></div>
+        </div>
+        <div class="form-group">
+            <label for="middleName">Middle Name</label>
+            <input type="text" id="middleName" name="middle_name">
+        </div>
+        <div class="form-group">
+            <label for="lastName" class="required">Last Name</label>
+            <input type="text" id="lastName" name="last_name" required>
+            <div class="error" id="lastNameError"></div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="dob" class="required">Date of Birth</label>
+            <input type="date" id="dob" name="date_of_birth" required onchange="calculateAge(this)">
+            <div class="error" id="dobError"></div>
+        </div>
+        <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" id="age" name="age" readonly>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="photo" class="required">Passport Size Image (up to 100KB)</label>
+        <input type="file" id="photo" name="photo" accept="image/*" required onchange="previewImage(event, 'photoPreview')">
+        <div id="photoPreview" class="uploaded-image"></div>
+        <div class="error" id="photoError"></div>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="fatherName" class="required">Father's Name</label>
+            <input type="text" id="fatherName" name="father_name" required>
+            <div class="error" id="fatherNameError"></div>
+        </div>
+        <div class="form-group">
+            <label for="tenantPhoneNumber" class="required">Tenant's Phone Number</label>
+            <input type="tel" id="tenantPhoneNumber" name="tenant_phone_number" required 
+                   pattern="[0-9]{10}" placeholder="Enter 10-digit phone number">
+            <div class="error" id="tenantPhoneNumberError"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Permanent Address Section -->
+<div class="form-section">
+    <h3>Permanent Address</h3>
+    <div class="form-group">
+        <label for="permanentAddress" class="required">Permanent Address</label>
+        <input type="text" id="permanentAddress" name="permanent_address" required>
+        <div class="error" id="permanentAddressError"></div>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="village" class="required">Village</label>
+            <input type="text" id="village" name="village" required>
+            <div class="error" id="villageError"></div>
+        </div>
+        <div class="form-group">
+            <label for="tehsil" class="required">Tehsil</label>
+            <input type="text" id="tehsil" name="tehsil" required>
+            <div class="error" id="tehsilError"></div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="postOffice" class="required">Post Office</label>
+            <input type="text" id="postOffice" name="post_office" required>
+            <div class="error" id="postOfficeError"></div>
+        </div>
+        <div class="form-group">
+            <label for="pinCode" class="required">Pin Code</label>
+            <input type="text" id="pinCode" name="pin_code" required 
+                   pattern="[0-9]{6}" placeholder="6-digit Pin Code">
+            <div class="error" id="pinCodeError"></div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="policeStationAddress" class="required">Police Station</label>
+            <input type="text" id="policeStationAddress" name="police_station" required>
+            <div class="error" id="policeStationError"></div>
+        </div>
+        <div class="form-group">
+            <label for="district" class="required">Select District</label>
+            <select id="district" name="district" required>
+                <option value="">Select District</option>
+                <option value="Gangtok">Gangtok</option>
+                <option value="Mangan">Mangan</option>
+                <option value="Pakyong">Pakyong</option>
+                <option value="Soreng">Soreng</option>
+                <option value="Namchi">Namchi</option>
+                <option value="Gyalshing">Gyalshing</option>
+            </select>
+            <div class="error" id="districtError"></div>
+        </div>
+    </div>
+</div>
+
+<!-- House Owner Phone Number Section -->
+<div class="form-section phone-section">
+    <h3>House Owner Contact</h3>
+    <div class="form-group">
+        <label for="ownerPhoneNumber" class="required">House Owner's Phone Number</label>
+        <input type="tel" id="ownerPhoneNumber" name="owner_phone_number" required 
+               pattern="[0-9]{10}" placeholder="Enter 10-digit phone number">
+        <div class="error" id="ownerPhoneNumberError"></div>
+    </div>
+</div>
+
+<!-- Profession Section -->
+<div class="form-section">
+    <h3>Profession Details</h3>
+    <div class="form-group">
+        <label for="profession" class="required">Profession</label>
+        <select id="profession" name="profession" required onchange="toggleOtherProfession()">
+            <option value="">Select Profession</option>
+            <option value="Government Servant">Government Servant</option>
+            <option value="Public Sector Undertaking Employee">Public Sector Undertaking Employee</option>
+            <option value="Retired Government Servant">Retired Government Servant</option>
+            <option value="Retired PSU Employee">Retired PSU Employee</option>
+            <option value="Businessman/Self-Employed">Businessman/Self-Employed</option>
+            <option value="Private Employee">Private Employee</option>
+            <option value="Others">Others</option>
+        </select>
+        <div class="error" id="professionError"></div>
+        <div id="otherProfession" class="form-group hidden">
+            <label for="otherProfessionText" class="required">Please Mention</label>
+            <input type="text" id="otherProfessionText" name="other_profession">
+            <div class="error" id="otherProfessionError"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="servingEmployee" class="required">Are you a Serving Government/PSU Employee?</label>
+        <select id="servingEmployee" name="serving_employee" required onchange="toggleUpload('servingEmployeeUpload', this.value)">
+            <option value="">Select</option>
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+        </select>
+        <div class="error" id="servingEmployeeError"></div>
+        <div id="servingEmployeeUpload" class="form-group hidden">
+            <label for="servingCertificate" class="required">Upload Certificate (up to 100KB)</label>
+            <input type="file" id="servingCertificate" name="serving_certificate" onchange="previewImage(event, 'servingCertificatePreview')">
+            <div id="servingCertificatePreview" class="uploaded-image"></div>
+            <div class="error" id="servingCertificateError"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="retiredEmployee" class="required">Are you a Retired Government/PSU Employee?</label>
+        <select id="retiredEmployee" name="retired_employee" required onchange="toggleUpload('retiredEmployeeUpload', this.value)">
+            <option value="">Select</option>
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+        </select>
+        <div class="error" id="retiredEmployeeError"></div>
+        <div id="retiredEmployeeUpload" class="form-group hidden">
+            <label for="retiredCertificate" class="required">Upload Pension Pay Book (up to 100KB)</label>
+            <input type="file" id="retiredCertificate" name="retired_certificate" onchange="previewImage(event, 'retiredCertificatePreview')">
+            <div id="retiredCertificatePreview" class="uploaded-image"></div>
+            <div class="error" id="retiredCertificateError"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="sikkimCertificate" class="required">Do you hold a Sikkim Subject Certificate/Identification/Voter ID/Ration Card?</label>
+        <select id="sikkimCertificate" name="sikkim_certificate" required onchange="toggleUpload('sikkimCertificateUpload', this.value)">
+            <option value="">Select</option>
+            <option value="No">No</option>
+            <option value="Yes">Yes</option>
+        </select>
+        <div class="error" id="sikkimCertificateError"></div>
+        <div id="sikkimCertificateUpload" class="form-group hidden">
+            <label for="sikkimCertificateFile" class="required">Upload Certificate (up to 100KB)</label>
+            <input type="file" id="sikkimCertificateFile" name="sikkim_certificate_file" onchange="previewImage(event, 'sikkimCertificatePreview')">
+            <div id="sikkimCertificatePreview" class="uploaded-image"></div>
+            <div class="error" id="sikkimCertificateFileError"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Family Members Section -->
+<div class="form-section">
+    <h3>Particulars of Dependents</h3>
+    <p style="margin-bottom: 1rem; color: #666;">
+        (Spouse, children, spouse of children, parents, grandparents, grandchildren, and blood relations of the tenant who reside with the tenant)
+    </p>
+    <div id="familyMembersSection">
+        <div class="member-entry">
+            <div class="member-header">
+                <span class="member-count">Family Member #1</span>
+                <button type="button" class="btn btn-danger hidden" onclick="removeMember(this)">Remove</button>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="required">First Name</label>
+                    <input type="text" name="family_members[0][first_name]" required>
+                    <div class="error" id="familyFirstName0Error"></div>
+                </div>
+                <div class="form-group">
+                    <label>Middle Name</label>
+                    <input type="text" name="family_members[0][middle_name]">
+                </div>
+                <div class="form-group">
+                    <label class="required">Last Name</label>
+                    <input type="text" name="family_members[0][last_name]" required>
+                    <div class="error" id="familyLastName0Error"></div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="required">Date of Birth</label>
+                    <input type="date" name="family_members[0][dob]" required onchange="calculateAge(this)">
+                    <div class="error" id="familyDob0Error"></div>
+                </div>
+                <div class="form-group">
+                    <label>Age</label>
+                    <input type="number" name="family_members[0][age]" readonly>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="required">Relationship with Tenant</label>
+                    <input type="text" name="family_members[0][relationship]" required>
+                    <div class="error" id="familyRelationship0Error"></div>
+                </div>
+                <div class="form-group">
+                    <label class="required">Profession</label>
+                    <input type="text" name="family_members[0][profession]" required>
+                    <div class="error" id="familyProfession0Error"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="button" class="btn btn-primary" onclick="addFamilyMember()">+ Add Family Member</button>
+</div>
+
+<!-- Previous Residences Section -->
+<div class="form-section">
+    <h3>History of Residence</h3>
+    <p style="margin-bottom: 1rem; color: #666;">
+        Particulars of the places where the tenant has resided during the past twelve months
+    </p>
+    <div id="residencesSection">
+        <div class="member-entry">
+            <div class="member-header">
+                <span class="member-count">Previous Residence #1</span>
+                <button type="button" class="btn btn-danger hidden" onclick="removeResidence(this)">Remove</button>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="required">From (Place)</label>
+                    <input type="text" name="previous_residences[0][from_place]" required>
+                    <div class="error" id="residenceFrom0Error"></div>
+                </div>
+                <div class="form-group">
+                    <label class="required">To (Place)</label>
+                    <input type="text" name="previous_residences[0][to_place]" required>
+                    <div class="error" id="residenceTo0Error"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="required">Complete Address</label>
+                <textarea name="previous_residences[0][address]" rows="2" required></textarea>
+                <div class="error" id="residenceAddress0Error"></div>
+            </div>
+        </div>
+    </div>
+    <button type="button" class="btn btn-primary" onclick="addResidence()">+ Add Previous Residence</button>
+</div>
+
+<!-- Police Verification Section -->
+<div class="form-section police-verification">
+    <h3>Previous Police Verification Details</h3>
+    <div class="form-group">
+        <label>If the tenant had resided under the jurisdiction of another police station in Sikkim and police verification had been carried out, name the Police Station:</label>
+        <input type="text" name="previous_police_station" placeholder="Enter Police Station name">
+    </div>
+</div>
+
+<!-- Signature Section -->
+<div class="form-section signature-section">
+    <h3>Declaration and Signature</h3>
+    <div class="date-signature">
+        <div class="form-group">
+            <label class="required">Date</label>
+            <input type="date" name="signature_date" required>
+            <div class="error" id="signatureDateError"></div>
+        </div>
+        <div class="form-group">
+            <label class="required">Upload Signature</label>
+            <input type="file" name="signature" accept="image/*" required onchange="previewImage(event, 'signaturePreview')">
+            <div id="signaturePreviewContainer" style="margin-top: 1rem;">
+                <img id="signaturePreview" class="signature-preview" src="#" alt="Signature Preview" style="display: none;">
+            </div>
+            <div class="error" id="signatureError"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Submit Button -->
+<div class="button-group">
+    <button type="submit" class="btn btn-success">Submit</button>
+</div>
+</form>
+</div>
+{% include 'footer.html' %}
+
+<script>
+// Utility Functions
+function calculateAge(dobInput) {
+    const dob = new Date(dobInput.value);
+    if (isNaN(dob.getTime())) return;
+    
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const monthDiff = today.getMonth() - dob.getMonth();
+    
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+        age--;
+    }
+    
+    const ageInput = dobInput.closest('.form-row').querySelector('input[name$="[age]"], input[name="age"]');
+    if (ageInput) ageInput.value = age;
+}
+
+function previewImage(event, previewId) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const preview = document.getElementById(previewId);
+        if (previewId === 'signaturePreview') {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        } else {
+            preview.innerHTML = `<img src="${e.target.result}" alt="Preview" class="uploaded-image">`;
+        }
+        clearError(event.target.id + 'Error');
+    };
+    reader.readAsDataURL(file);
+}
+
+// DOM Manipulation Functions
+function showError(elementId, message) {
+    const errorElement = document.getElementById(elementId);
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+    }
+}
+
+function clearError(elementId) {
+    const errorElement = document.getElementById(elementId);
+    if (errorElement) {
+        errorElement.textContent = '';
+        errorElement.style.display = 'none';
+    }
+}
+
+function toggleUpload(uploadSectionId, value) {
+    const section = document.getElementById(uploadSectionId);
+    if (!section) return;
+    
+    if (value === 'Yes') {
+        section.classList.remove('hidden');
+    } else {
+        section.classList.add('hidden');
+        const fileInput = section.querySelector('input[type="file"]');
+        if (fileInput) {
+            fileInput.value = '';
+            const previewId = fileInput.id + 'Preview';
+            const preview = document.getElementById(previewId);
+            if (preview) {
+                if (preview.tagName === 'IMG') {
+                    preview.src = '#';
+                    preview.style.display = 'none';
+                } else {
+                    preview.innerHTML = '';
+                }
+            }
+        }
+    }
+}
+
+function toggleOtherProfession() {
+    const profession = document.getElementById('profession').value;
+    const otherProfessionDiv = document.getElementById('otherProfession');
+    const otherProfessionInput = document.getElementById('otherProfessionText');
+    if (profession === 'Others') {
+        otherProfessionDiv.classList.remove('hidden');
+        otherProfessionInput.required = true;
+    } else {
+        otherProfessionDiv.classList.add('hidden');
+        otherProfessionInput.required = false;
+        otherProfessionInput.value = '';
+    }
+}
+
+// Dynamic Form Elements
+let familyMemberCount = 1;
+let residenceCount = 1;
+
+function addFamilyMember() {
+    const section = document.getElementById('familyMembersSection');
+    const template = section.querySelector('.member-entry').cloneNode(true);
+    
+    const newIndex = familyMemberCount;
+    template.querySelectorAll('input, textarea, select').forEach(input => {
+        input.value = '';
+        input.name = input.name.replace('[0]', `[${newIndex}]`);
+        input.id = input.id ? input.id.replace('0', newIndex) : '';
+        if (input.required) input.removeAttribute('required');
+    });
+    
+    template.querySelectorAll('[id$="0Error"]').forEach(error => {
+        error.id = error.id.replace('0', newIndex);
+    });
+    
+    template.querySelector('.member-count').textContent = `Family Member #${newIndex + 1}`;
+    template.querySelector('.btn-danger').classList.remove('hidden');
+    
+    const dobInput = template.querySelector('input[name$="[dob]"]');
+    if (dobInput) {
+        dobInput.addEventListener('change', function() {
+            calculateAge(this);
+        });
+    }
+    
+    section.appendChild(template);
+    familyMemberCount++;
+}
+
+function removeMember(button) {
+    const section = document.getElementById('familyMembersSection');
+    const entries = section.querySelectorAll('.member-entry');
+    
+    if (entries.length > 1) {
+        button.closest('.member-entry').remove();
+        familyMemberCount--;
+        
+        section.querySelectorAll('.member-entry').forEach((entry, index) => {
+            entry.querySelector('.member-count').textContent = `Family Member #${index + 1}`;
+            
+            entry.querySelectorAll('input, textarea, select').forEach(input => {
+                input.name = input.name.replace(/\[\d+\]/, `[${index}]`);
+                input.id = input.id ? input.id.replace(/\d+/, index) : '';
+            });
+            
+            entry.querySelectorAll('[id$="Error"]').forEach(error => {
+                const parts = error.id.match(/(\D+)(\d+)(\D+)/);
+                if (parts) {
+                    error.id = parts[1] + index + parts[3];
+                }
+            });
+        });
+    }
+}
+
+function addResidence() {
+    const section = document.getElementById('residencesSection');
+    const template = section.querySelector('.member-entry').cloneNode(true);
+    
+    const newIndex = residenceCount;
+    template.querySelectorAll('input, textarea').forEach(input => {
+        input.value = '';
+        input.name = input.name.replace('[0]', `[${newIndex}]`);
+        input.id = input.id ? input.id.replace('0', newIndex) : '';
+        if (input.required) input.removeAttribute('required');
+    });
+    
+    template.querySelectorAll('[id$="0Error"]').forEach(error => {
+        error.id = error.id.replace('0', newIndex);
+    });
+    
+    template.querySelector('.member-count').textContent = `Previous Residence #${newIndex + 1}`;
+    template.querySelector('.btn-danger').classList.remove('hidden');
+    
+    section.appendChild(template);
+    residenceCount++;
+}
+
+function removeResidence(button) {
+    const section = document.getElementById('residencesSection');
+    const entries = section.querySelectorAll('.member-entry');
+    
+    if (entries.length > 1) {
+        button.closest('.member-entry').remove();
+        residenceCount--;
+        
+        section.querySelectorAll('.member-entry').forEach((entry, index) => {
+            entry.querySelector('.member-count').textContent = `Previous Residence #${index + 1}`;
+            
+            entry.querySelectorAll('input, textarea').forEach(input => {
+                input.name = input.name.replace(/\[\d+\]/, `[${index}]`);
+                input.id = input.id ? input.id.replace(/\d+/, index) : '';
+            });
+            
+            entry.querySelectorAll('[id$="Error"]').forEach(error => {
+                const parts = error.id.match(/(\D+)(\d+)(\D+)/);
+                if (parts) {
+                    error.id = parts[1] + index + parts[3];
+                }
+            });
+        });
+    }
+}
+
+// Form Validation
+function validateForm(form) {
+    let isValid = true;
+    
+    // Clear all errors first
+    document.querySelectorAll('.error').forEach(el => {
+        el.textContent = '';
+        el.style.display = 'none';
+    });
+
+    // Required field validation
+    const requiredFields = [
+        'first_name', 'last_name', 'date_of_birth', 'father_name',
+        'tenant_phone_number', 'permanent_address', 'village',
+        'tehsil', 'post_office', 'pin_code', 'police_station',
+        'district', 'owner_phone_number', 'profession',
+        'signature_date', 'signature'
+    ];
+
+    requiredFields.forEach(field => {
+        const input = form.querySelector(`[name="${field}"]`);
+        if (!input || !input.value.trim()) {
+            showError(`${field}Error`, 'This field is required');
+            isValid = false;
+        }
+    });
+
+    // Phone number validation
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(form.querySelector('[name="tenant_phone_number"]').value)) {
+        showError('tenant_phone_numberError', 'Enter a valid 10-digit phone number');
+        isValid = false;
+    }
+    
+    if (!phoneRegex.test(form.querySelector('[name="owner_phone_number"]').value)) {
+        showError('owner_phone_numberError', 'Enter a valid 10-digit phone number');
+        isValid = false;
+    }
+
+    // PIN code validation
+    const pinRegex = /^\d{6}$/;
+    if (!pinRegex.test(form.querySelector('[name="pin_code"]').value)) {
+        showError('pin_codeError', 'Enter a valid 6-digit PIN code');
+        isValid = false;
+    }
+
+    // Conditional field validation
+    if (form.querySelector('[name="serving_employee"]').value === 'Yes' && 
+        !form.querySelector('[name="serving_certificate"]').files[0]) {
+        showError('serving_certificateError', 'Certificate is required');
+        isValid = false;
+    }
+    
+    if (form.querySelector('[name="retired_employee"]').value === 'Yes' && 
+        !form.querySelector('[name="retired_certificate"]').files[0]) {
+        showError('retired_certificateError', 'Certificate is required');
+        isValid = false;
+    }
+    
+    if (form.querySelector('[name="sikkim_certificate"]').value === 'Yes' && 
+        !form.querySelector('[name="sikkim_certificate_file"]').files[0]) {
+        showError('sikkim_certificate_fileError', 'Certificate is required');
+        isValid = false;
+    }
+
+    // Other profession validation
+    if (form.querySelector('[name="profession"]').value === 'Others' && 
+        !form.querySelector('[name="other_profession"]').value.trim()) {
+        showError('otherProfessionError', 'Please specify your profession');
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+// Initialize Event Listeners
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize dynamic field toggles
+    document.getElementById('servingEmployee').addEventListener('change', function() {
+        toggleUpload('servingEmployeeUpload', this.value);
+    });
+    document.getElementById('retiredEmployee').addEventListener('change', function() {
+        toggleUpload('retiredEmployeeUpload', this.value);
+    });
+    document.getElementById('sikkimCertificate').addEventListener('change', function() {
+        toggleUpload('sikkimCertificateUpload', this.value);
+    });
+    document.getElementById('profession').addEventListener('change', toggleOtherProfession);
+
+    // Initialize date fields for age calculation
+    document.querySelectorAll('input[name$="[dob]"], input[name="date_of_birth"]').forEach(dobInput => {
+        dobInput.addEventListener('change', function() {
+            calculateAge(this);
+        });
+    });
+
+    // Add member and residence buttons
+    document.querySelector('.btn-primary[onclick="addFamilyMember()"]').addEventListener('click', addFamilyMember);
+    document.querySelector('.btn-primary[onclick="addResidence()"]').addEventListener('click', addResidence);
+
+    // Form submission
+    document.getElementById('tenantForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const form = e.target;
+        
+        if (!validateForm(form)) {
+            // Scroll to first error
+            const firstError = document.querySelector('.error:not(:empty)');
+            if (firstError) {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return;
+        }
+
+        const formData = new FormData(form);
+        formData.append('status', 'pending');
+        formData.append('police_status', 'pending');
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': form.querySelector('[name="csrfmiddlewaretoken"]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect_url;
+            } else {
+                console.error('Server Error:', data.error);
+                if (data.error) {
+                    // Handle specific field errors from server
+                    Object.entries(data.error).forEach(([field, message]) => {
+                        showError(`${field}Error`, message);
+                    });
+                } else {
+                    alert('Submission failed. Please check all fields and try again.');
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Network Error:', error);
+            alert('Network error. Please try again.');
+        });
+    });
+});
+</script>

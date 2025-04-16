@@ -1,0 +1,171 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Status - Sikkim Tenant Verification Portal</title>
+  <link rel="stylesheet" href="{% static 'css/header_footer.css' %}">
+  <style>
+    /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f8f9fa;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #1a73e8;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Table Styles */
+    .status-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .status-table th,
+    .status-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    .status-table th {
+      background-color: #f8f9fa;
+      color: #555;
+      font-weight: 600;
+    }
+
+    .status-table tbody tr:hover {
+      background-color: #f8f9fa;
+    }
+
+    .status-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .status-pending {
+      background-color: #fff3cd;
+      color: #856404;
+    }
+
+    .status-approved {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .status-rejected {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    .action-remarks {
+      color: #721c24;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+
+    .upload-instructions {
+      color: #1a73e8;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+
+    .upload-link {
+      color: #1a73e8;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .upload-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  {% include 'header.html' %}
+
+  <div class="container">
+    <h1>Application Status</h1>
+    <table class="status-table">
+      <thead>
+        <tr>
+          <th>Application ID</th>
+          <th>Type</th>
+          <th>Submission Date</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Application 1 -->
+        <tr>
+          <td>#APP001</td>
+          <td>Tenant Verification</td>
+          <td>2024-02-13</td>
+          <td>
+            <span class="status-badge status-pending">Pending</span>
+          </td>
+          <td>
+            <div class="action-remarks">
+              Your application is under review. Please wait for further updates.
+            </div>
+          </td>
+        </tr>
+        <!-- Application 2 -->
+        <tr>
+          <td>#APP002</td>
+          <td>Tenant Verification</td>
+          <td>2024-02-10</td>
+          <td>
+            <span class="status-badge status-approved">Approved</span>
+          </td>
+          <td>
+            <div class="action-remarks">
+              Your application has been approved. No further action is required.
+            </div>
+          </td>
+        </tr>
+        <!-- Application 3 -->
+        <tr>
+          <td>#APP003</td>
+          <td>Tenant Verification</td>
+          <td>2024-02-05</td>
+          <td>
+            <span class="status-badge status-rejected">Rejected</span>
+          </td>
+          <td>
+            <div class="action-remarks">
+              Your application has been rejected due to incomplete documentation.
+            </div>
+           
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  {% include 'footer.html' %}
+</body>
+</html>

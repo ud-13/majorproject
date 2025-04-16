@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/header_footer.css' %}">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 2rem;
+        }
+        .message {
+            font-size: 1.5rem;
+            color: #1a73e8;
+            margin-bottom: 1rem;
+        }
+        .redirect-link {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        .redirect-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="message">
+        {% if user.role == 'tenant' %}
+            Tenant logged out successfully.
+        {% elif user.role == 'house_owner' %}
+            House Owner logged out successfully.
+        {% elif user.role == 'police' %}
+            Police logged out successfully.
+        {% else %}
+            You have been logged out.
+        {% endif %}
+    </div>
+    <p>
+        Return to
+        <a href="{% if user.role == 'tenant' %}{% url 'tenant_login' %}
+                 {% elif user.role == 'house_owner' %}{% url 'house_owner_login' %}
+                 {% elif user.role == 'police' %}{% url 'police_login' %}
+                 {% else %}{% url 'home' %}{% endif %}"
+           class="redirect-link">
+            login page
+        </a>.
+    </p>
+</body>
+</html>

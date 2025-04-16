@@ -1,0 +1,165 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Police Sign Up</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/header_footer.css' %}">
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+        }
+
+        /* Signup Container */
+        .signup-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+
+        .signup-container h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a73e8;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        /* Form Group Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 5px rgba(26, 115, 232, 0.3);
+        }
+
+        /* Horizontal Layout for Fields */
+        .name-fields, .horizontal-fields {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .name-fields .form-group, .horizontal-fields .form-group {
+            flex: 1;
+        }
+
+        /* Submit Button */
+        .submit-button-container {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .submit-button {
+            padding: 0.75rem 1.5rem;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-button:hover {
+            background-color: #0d47a1;
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="signup-container">
+        <h2>Police Officer Sign Up</h2>
+        <form action="#" method="post">
+            <!-- Name Fields (Horizontal Layout) -->
+            <div class="name-fields">
+                <!-- SHO First Name -->
+                <div class="form-group">
+                    <label for="sho-first-name">SHO First Name</label>
+                    <input type="text" id="sho-first-name" name="sho_first_name" required>
+                </div>
+
+                <!-- Middle Name -->
+                <div class="form-group">
+                    <label for="middle-name">Middle Name</label>
+                    <input type="text" id="middle-name" name="middle_name">
+                </div>
+
+                <!-- Last Name -->
+                <div class="form-group">
+                    <label for="last-name">Last Name</label>
+                    <input type="text" id="last-name" name="last_name" required>
+                </div>
+            </div>
+
+            <!-- Outpost and Phone Number (Horizontal Layout) -->
+            <div class="horizontal-fields">
+                <!-- Outpost Name -->
+                <div class="form-group">
+                    <label for="outpost-name">Outpost Name</label>
+                    <input type="text" id="outpost-name" name="outpost_name" required>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="form-group">
+                    <label for="phone-number">Phone Number</label>
+                    <input type="tel" id="phone-number" name="phone_number" required>
+                </div>
+            </div>
+
+            <!-- District and Pin Code (Horizontal Layout) -->
+            <div class="horizontal-fields">
+                <!-- District -->
+                <div class="form-group">
+                    <label for="district">District</label>
+                    <input type="text" id="district" name="district" required>
+                </div>
+
+                <!-- Pin Code -->
+                <div class="form-group">
+                    <label for="pincode">Pin Code</label>
+                    <input type="text" id="pincode" name="pincode" required>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group submit-button-container">
+                <button type="submit" class="submit-button">Sign Up</button>
+            </div>
+        </form>
+    </div>
+    {% include 'footer.html' %}
+</body>
+</html>

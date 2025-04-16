@@ -1,0 +1,68 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #f8f9fa;
+}
+
+/* Header Styles */
+.header {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #1a73e8, #0d47a1);
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    color: white;
+}
+
+.logo-placeholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-placeholder img {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+    object-fit: contain;
+}
+
+.title-container {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.portal-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Footer Styles */
+.footer {
+    background-color: #ffffff;
+    padding: 1rem 2rem;
+    text-align: center;
+    border-top: 1px solid #e0e0e0;
+    color: #555;
+    font-size: 0.9rem;
+    margin-top: 2rem;
+}
+
+.footer a {
+    color: #1a73e8;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}

@@ -1,0 +1,345 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Home Owner</title>
+    <link rel="stylesheet" href="{% static 'css/header_footer.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-container h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a73e8;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 5px rgba(26, 115, 232, 0.3);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .horizontal-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .horizontal-group .upload-section {
+            flex: 1;
+        }
+
+        .horizontal-group .form-group {
+            flex: 1;
+        }
+
+        .upload-section {
+            margin-top: 0;
+            position: relative;
+        }
+
+        .upload-section label {
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-section input[type="file"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .preview-btn {
+            width: 100%;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .preview-btn:hover {
+            background-color: #0d47a1;
+        }
+
+        .preview-btn.hidden {
+            display: none;
+        }
+
+        .submit-button {
+            width: 200px;
+            padding: 0.5rem;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .submit-button:hover {
+            background-color: #0d47a1;
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+
+    <div class="form-container">
+        <h2>Sign Up - Home Owner</h2>
+        <form id="signup-form">
+            <!-- Name Fields -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="middleName">Middle Name</label>
+                    <input type="text" id="middleName" name="middleName">
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+            </div>
+
+            <!-- Date of Birth and Age -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" id="dob" name="dob" required onchange="calculateAge()">
+                </div>
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="text" id="age" name="age" readonly>
+                </div>
+            </div>
+
+            <!-- Passport Size Picture and Phone Number (Horizontal) -->
+            <div class="horizontal-group">
+                <div class="upload-section">
+                    <label for="photo">Passport Size Picture</label>
+                    <input type="file" id="photo" name="photo" accept="image/*" required>
+                    <button type="button" id="photo-preview" class="preview-btn hidden" onclick="previewFile('photo')">Preview Photo</button>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" id="phone" name="phone" required>
+                </div>
+            </div>
+
+            <!-- Aadhar Card Upload and Number (Horizontal) -->
+            <div class="horizontal-group">
+                <div class="upload-section">
+                    <label for="aadharCard">Upload Aadhar Card</label>
+                    <input type="file" id="aadharCard" name="aadharCard" accept="image/*,application/pdf" required>
+                    <button type="button" id="aadhar-preview" class="preview-btn hidden" onclick="previewFile('aadharCard')">Preview Aadhar Card</button>
+                </div>
+                <div class="form-group">
+                    <label for="aadharNumber">Aadhar Card Number</label>
+                    <input type="text" id="aadharNumber" name="aadharNumber" required>
+                </div>
+            </div>
+
+            <!-- Sikkim Certificate and Residential Certificate (Horizontal) -->
+            <div class="horizontal-group">
+                <div class="upload-section">
+                    <label for="sikkimCertificate">Upload Sikkim Certificate</label>
+                    <input type="file" id="sikkimCertificate" name="sikkimCertificate" accept="image/*,application/pdf" required>
+                    <button type="button" id="sikkim-preview" class="preview-btn hidden" onclick="previewFile('sikkimCertificate')">Preview Sikkim Certificate</button>
+                </div>
+                <div class="upload-section">
+                    <label for="residentialCertificate">Upload Residential Certificate</label>
+                    <input type="file" id="residentialCertificate" name="residentialCertificate" accept="image/*,application/pdf" required>
+                    <button type="button" id="residential-preview" class="preview-btn hidden" onclick="previewFile('residentialCertificate')">Preview Residential Certificate</button>
+                </div>
+            </div>
+
+            <!-- Land Parcha Upload -->
+            <div class="upload-section">
+                <label for="landParcha">Upload Land Parcha</label>
+                <input type="file" id="landParcha" name="landParcha" accept="image/*,application/pdf" required>
+                <button type="button" id="land-parcha-preview" class="preview-btn hidden" onclick="previewFile('landParcha')">Preview Land Parcha</button>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="submit-button">Create Account</button>
+        </form>
+    </div>
+
+    {% include 'footer.html' %}
+
+    <script>
+        // Function to calculate age based on Date of Birth
+        function calculateAge() {
+            const dob = new Date(document.getElementById('dob').value);
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const monthDiff = today.getMonth() - dob.getMonth();
+
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+
+            document.getElementById('age').value = age;
+        }
+
+        // Initialize file input change listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up event listeners for all file inputs
+            document.getElementById('photo').addEventListener('change', function() {
+                togglePreviewButton(this, 'photo-preview');
+            });
+            document.getElementById('aadharCard').addEventListener('change', function() {
+                togglePreviewButton(this, 'aadhar-preview');
+            });
+            document.getElementById('sikkimCertificate').addEventListener('change', function() {
+                togglePreviewButton(this, 'sikkim-preview');
+            });
+            document.getElementById('residentialCertificate').addEventListener('change', function() {
+                togglePreviewButton(this, 'residential-preview');
+            });
+            document.getElementById('landParcha').addEventListener('change', function() {
+                togglePreviewButton(this, 'land-parcha-preview');
+            });
+        });
+
+        // Show/hide preview button based on file selection
+        function togglePreviewButton(input, previewBtnId) {
+            const previewBtn = document.getElementById(previewBtnId);
+            if (input.files && input.files[0]) {
+                previewBtn.classList.remove('hidden');
+            } else {
+                previewBtn.classList.add('hidden');
+            }
+        }
+
+        // Preview uploaded file
+        function previewFile(inputId) {
+            const input = document.getElementById(inputId);
+            const file = input.files[0];
+            if (file) {
+                const fileType = file.type;
+                const url = URL.createObjectURL(file);
+                const newWindow = window.open("", "_blank", "width=800,height=600");
+
+                if (fileType.startsWith('image/')) {
+                    newWindow.document.write(`
+                        <html>
+                        <head><title>File Preview</title></head>
+                        <body style="margin: 0; display: flex; justify-content: center; align-items: center; background: #f8f9fa;">
+                            <img src="${url}" style="max-width: 100%; max-height: 100%;">
+                        </body>
+                        </html>
+                    `);
+                } else if (fileType === 'application/pdf') {
+                    newWindow.document.write(`
+                        <html>
+                        <head><title>File Preview</title></head>
+                        <body style="margin: 0;">
+                            <embed src="${url}" width="100%" height="100%" type="application/pdf">
+                        </body>
+                        </html>
+                    `);
+                }
+                newWindow.document.close();
+            }
+        }
+
+        // Form Submission
+        document.getElementById('signup-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            // Validate form fields
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const dob = document.getElementById('dob').value;
+            const photo = document.getElementById('photo').value;
+            const phone = document.getElementById('phone').value;
+            const aadharCard = document.getElementById('aadharCard').value;
+            const aadharNumber = document.getElementById('aadharNumber').value;
+            const sikkimCertificate = document.getElementById('sikkimCertificate').value;
+            const residentialCertificate = document.getElementById('residentialCertificate').value;
+            const landParcha = document.getElementById('landParcha').value;
+
+            if (!firstName || !lastName || !dob || !photo || !phone || !aadharCard || !aadharNumber || !sikkimCertificate || !residentialCertificate || !landParcha) {
+                alert('Please fill out all required fields.');
+                return;
+            }
+
+            // Simulate account creation
+            alert('Account created successfully!');
+            window.location.href = "{% url 'HomeOwnerdashboard' %}"; // Redirect to HomeOwnerdashboard page
+        });
+    </script>
+</body>
+</html>

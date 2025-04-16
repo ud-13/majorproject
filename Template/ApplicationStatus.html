@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Status - Tenant Verification System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .header {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 40px;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: none;
+            padding: 20px;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .status-badge {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .status-approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .status-steps {
+            display: flex;
+            margin-top: 20px;
+            position: relative;
+        }
+        .status-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+        .status-step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e9ecef;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            position: relative;
+            z-index: 2;
+        }
+        .status-step.active .status-step-icon {
+            background-color: #007bff;
+            color: white;
+        }
+        .status-step.completed .status-step-icon {
+            background-color: #28a745;
+            color: white;
+        }
+        .status-step-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        .status-step.active .status-step-label {
+            color: #007bff;
+            font-weight: 500;
+        }
+        .status-step.completed .status-step-label {
+            color: #28a745;
+            font-weight: 500;
+        }
+        .status-line {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #e9ecef;
+            z-index: 1;
+        }
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            height: 2px;
+            background-color: #28a745;
+            z-index: 1;
+            transition: width 0.5s;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 50px 0;
+        }
+        .empty-icon {
+            font-size: 4rem;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1>Application Status</h1>
+            <div>
+                <a href="/index/" class="btn btn-outline-light me-2">Home</a>
+                <a href="/logout/" class="btn btn-outline-light">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        {% if tenants %}
+            {% for tenant in tenants %}
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-0">Application #{{ tenant.id }}</h5>
+                            <small class="text-muted">Submitted on {{ tenant.created_at|date:"F d, Y" }}</small>
+                        </div>
+                        <div>
+                            {% if tenant.status == 'pending' %}
+                                <span class="status-badge status-pending">Pending</span>
+                            {% elif tenant.status == 'approved' %}
+                                {% if tenant.police_status == 'pending' %}
+                                    <span class="status-badge status-pending">Police Verification Pending</span>
+                                {% elif tenant.police_status == 'approved' %}
+                                    <span class="status-badge status-approved">Approved</span>
+                                {% else %}
+                                    <span class="status-badge status-rejected">Rejected by Police</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="status-badge status-rejected">Rejected</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h6>Applicant Details</h6>
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <p class="mb-1"><strong>Name:</strong> {{ tenant.first_name }} {% if tenant.middle_name %}{{ tenant.middle_name }} {% endif %}{{ tenant.last_name }}</p>
+                                <p class="mb-1"><strong>Phone:</strong> {{ tenant.tenant_phone_number }}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="mb-1"><strong>District:</strong> {{ tenant.district }}</p>
+                                <p class="mb-1"><strong>Profession:</strong> {{ tenant.profession }}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="mb-1"><strong>Home Owner Phone:</strong> {{ tenant.owner_phone_number }}</p>
+                                <p class="mb-1"><strong>Submitted On:</strong> {{ tenant.created_at|date:"F d, Y" }}</p>
+                            </div>
+                        </div>
+                        
+                        <h6>Application Status</h6>
+                        <div class="status-steps">
+                            <div class="status-line"></div>
+                            <div class="progress-line" style="width: 
+                                {% if tenant.status == 'rejected' %}
+                                    33%
+                                {% elif tenant.status == 'pending' %}
+                                    33%
+                                {% elif tenant.status == 'approved' and tenant.police_status == 'pending' %}
+                                    66%
+                                {% elif tenant.police_status == 'approved' or tenant.police_status == 'rejected' %}
+                                    100%
+                                {% else %}
+                                    0%
+                                {% endif %}
+                            "></div>
+                            
+                            <div class="status-step {% if tenant.status != 'pending' or tenant.status == 'rejected' %}completed{% else %}active{% endif %}">
+                                <div class="status-step-icon">
+                                    <i data-feather="file-text"></i>
+                                </div>
+                                <div class="status-step-label">Submitted</div>
+                            </div>
+                            
+                            <div class="status-step {% if tenant.status == 'approved' %}completed{% elif tenant.status == 'rejected' %}completed{% else %}{% endif %}">
+                                <div class="status-step-icon">
+                                    <i data-feather="check-circle"></i>
+                                </div>
+                                <div class="status-step-label">Initial Approval</div>
+                            </div>
+                            
+                            <div class="status-step {% if tenant.police_status == 'approved' %}completed{% elif tenant.police_status == 'rejected' %}completed{% elif tenant.status == 'approved' and tenant.police_status == 'pending' %}active{% endif %}">
+                                <div class="status-step-icon">
+                                    <i data-feather="shield"></i>
+                                </div>
+                                <div class="status-step-label">Police Verification</div>
+                            </div>
+                        </div>
+                        
+                        {% if tenant.police_remark %}
+                            <div class="alert alert-warning mt-4">
+                                <strong>Police Remarks:</strong> {{ tenant.police_remark }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="card">
+                <div class="card-body empty-state">
+                    <div class="empty-icon">
+                        <i data-feather="file"></i>
+                    </div>
+                    <h4>No Applications Found</h4>
+                    <p class="text-muted">You haven't submitted any tenant verification applications yet.</p>
+                    <a href="/Registration/" class="btn btn-primary mt-3">Submit New Application</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize Feather icons
+        feather.replace();
+    </script>
+</body>
+</html>

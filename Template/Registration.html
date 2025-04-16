@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenant Registration Form</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding-bottom: 50px;
+        }
+        .header {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 40px;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .section-title {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+            color: #343a40;
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .required-field::after {
+            content: "*";
+            color: red;
+            margin-left: 4px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            padding: 10px 25px;
+        }
+        .btn-outline-secondary {
+            margin-right: 10px;
+        }
+        .dynamic-list {
+            list-style: none;
+            padding: 0;
+        }
+        .dynamic-item {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1>Tenant Registration Form</h1>
+            <a href="/logout/" class="btn btn-outline-light">Logout</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="form-container">
+            <form id="tenantRegistrationForm" enctype="multipart/form-data">
+                <!-- Alert for validation errors -->
+                <div class="alert alert-danger" style="display: none;" id="errorAlert"></div>
+                
+                <!-- Personal Information Section -->
+                <div class="form-section">
+                    <h3 class="section-title">Personal Information</h3>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="first_name" class="form-label required-field">First Name</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="middle_name" class="form-label">Middle Name</label>
+                            <input type="text" class="form-control" id="middle_name" name="middle_name">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="last_name" class="form-label required-field">Last Name</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="date_of_birth" class="form-label required-field">Date of Birth</label>
+                            <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="age" class="form-label">Age</label>
+                            <input type="number" class="form-control" id="age" name="age" readonly>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="father_name" class="form-label required-field">Father's Name</label>
+                            <input type="text" class="form-control" id="father_name" name="father_name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="photo" class="form-label required-field">Photo</label>
+                            <input type="file" class="form-control" id="photo" name="photo" accept="image/*" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="tenant_phone_number" class="form-label required-field">Phone Number</label>
+                            <input type="text" class="form-control" id="tenant_phone_number" name="tenant_phone_number" pattern="[0-9]{10}" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="owner_phone_number" class="form-label required-field">Home Owner's Phone Number</label>
+                            <input type="text" class="form-control" id="owner_phone_number" name="owner_phone_number" pattern="[0-9]{10}" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Address Information Section -->
+                <div class="form-section">
+                    <h3 class="section-title">Address Information</h3>
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <label for="permanent_address" class="form-label required-field">Permanent Address</label>
+                            <textarea class="form-control" id="permanent_address" name="permanent_address" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="village" class="form-label required-field">Village/Town</label>
+                            <input type="text" class="form-control" id="village" name="village" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="tehsil" class="form-label required-field">Tehsil</label>
+                            <input type="text" class="form-control" id="tehsil" name="tehsil" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="post_office" class="form-label required-field">Post Office</label>
+                            <input type="text" class="form-control" id="post_office" name="post_office" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="pin_code" class="form-label required-field">PIN Code</label>
+                            <input type="text" class="form-control" id="pin_code" name="pin_code" pattern="[0-9]{6}" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="police_station" class="form-label required-field">Police Station</label>
+                            <input type="text" class="form-control" id="police_station" name="police_station" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="district" class="form-label required-field">District</label>
+                            <select class="form-select" id="district" name="district" required>
+                                <option value="">Select District</option>
+                                <option value="Gangtok">Gangtok</option>
+                                <option value="Mangan">Mangan</option>
+                                <option value="Pakyong">Pakyong</option>
+                                <option value="Soreng">Soreng</option>
+                                <option value="Namchi">Namchi</option>
+                                <option value="Gyalshing">Gyalshing</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Professional Information Section -->
+                <div class="form-section">
+                    <h3 class="section-title">Professional Information</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="profession" class="form-label required-field">Profession</label>
+                            <select class="form-select" id="profession" name="profession" required>
+                                <option value="">Select Profession</option>
+                                <option value="Government Servant">Government Servant</option>
+                                <option value="Public Sector Undertaking Employee">Public Sector Undertaking Employee</option>
+                                <option value="Retired Government Servant">Retired Government Servant</option>
+                                <option value="Retired PSU Employee">Retired PSU Employee</option>
+                                <option value="Businessman/Self-Employed">Businessman/Self-Employed</option>
+                                <option value="Private Employee">Private Employee</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3" id="otherProfessionDiv" style="display: none;">
+                            <label for="other_profession" class="form-label required-field">Specify Other Profession</label>
+                            <input type="text" class="form-control" id="other_profession" name="other_profession">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Are you a serving employee?</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="serving_employee" id="serving_yes" value="Yes">
+                                <label class="form-check-label" for="serving_yes">Yes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="serving_employee" id="serving_no" value="No" checked>
+                                <label class="form-check-label" for="serving_no">No</label>
+                            </div>
+                        </div>
+                        <div class="col-md-8 mb-3" id="servingCertificateDiv" style="display: none;">
+                            <label for="serving_certificate" class="form-label required-field">Upload Serving Certificate</label>
+                            <input type="file" class="form-control" id="serving_certificate" name="serving_certificate" accept="image/*,.pdf">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Are you a retired employee?</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="retired_employee" id="retired_yes" value="Yes">
+                                <label class="form-check-label" for="retired_yes">Yes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="retired_employee" id="retired_no" value="No" checked>
+                                <label class="form-check-label" for="retired_no">No</label>
+                            </div>
+                        </div>
+                        <div class="col-md-8 mb-3" id="retiredCertificateDiv" style="display: none;">
+                            <label for="retired_certificate" class="form-label required-field">Upload Retirement Certificate</label>
+                            <input type="file" class="form-control" id="retired_certificate" name="retired_certificate" accept="image/*,.pdf">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Do you have a Sikkim certificate?</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="sikkim_certificate" id="sikkim_yes" value="Yes">
+                                <label class="form-check-label" for="sikkim_yes">Yes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="sikkim_certificate" id="sikkim_no" value="No" checked>
+                                <label class="form-check-label" for="sikkim_no">No</label>
+                            </div>
+                        </div>
+                        <div class="col-md-8 mb-3" id="sikkimCertificateDiv" style="display: none;">
+                            <label for="sikkim_certificate_file" class="form-label required-field">Upload Sikkim Certificate</label>
+                            <input type="file" class="form-control" id="sikkim_certificate_file" name="sikkim_certificate_file" accept="image/*,.pdf">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Family Members Section -->
+                <div class="form-section">
+                    <h3 class="section-title">Family Members</h3>
+                    <p>Add details of family members who will be staying with you</p>
+                    
+                    <ul class="dynamic-list" id="familyMembersList">
+                        <!-- Family members will be added here dynamically -->
+                    </ul>
+                    
+                    <button type="button" class="btn btn-outline-secondary" id="addFamilyMemberBtn">
+                        <i data-feather="plus"></i> Add Family Member
+                    </button>
+                </div>
+                
+                <!-- Previous Residences Section -->
+                <div class="form-section">
+                    <h3 class="section-title">Previous Residences</h3>
+                    <p>Add details of your previous residences</p>
+                    
+                    <ul class="dynamic-list" id="previousResidencesList">
+                        <!-- Previous residences will be added here dynamically -->
+                    </ul>
+                    
+                    <button type="button" class="btn btn-outline-secondary" id="addPreviousResidenceBtn">
+                        <i data-feather="plus"></i> Add Previous Residence
+                    </button>
+                </div>
+                
+                <!-- Additional Information Section -->
+                <div class="form-section">
+                    <h3 class="section-title">Additional Information</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="previous_police_station" class="form-label">Previous Police Station (if any)</label>
+                            <input type="text" class="form-control" id="previous_police_station" name="previous_police_station">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Signature Section -->
+                <div class="form-section">
+                    <h3 class="section-title">Signature</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="signature_date" class="form-label required-field">Date</label>
+                            <input type="date" class="form-control" id="signature_date" name="signature_date" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="signature" class="form-label required-field">Signature</label>
+                            <input type="file" class="form-control" id="signature" name="signature" accept="image/*" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">Submit Registration</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Family Member Template (hidden) -->
+    <template id="familyMemberTemplate">
+        <li class="dynamic-item family-member">
+            <button type="button" class="remove-btn remove-family-member">×</button>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label required-field">First Name</label>
+                    <input type="text" class="form-control" name="family_first_name" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Middle Name</label>
+                    <input type="text" class="form-control" name="family_middle_name">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label required-field">Last Name</label>
+                    <input type="text" class="form-control" name="family_last_name" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label required-field">Date of Birth</label>
+                    <input type="date" class="form-control family-dob" name="family_dob" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Age</label>
+                    <input type="number" class="form-control family-age" name="family_age" readonly>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label required-field">Relationship</label>
+                    <input type="text" class="form-control" name="family_relationship" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label required-field">Profession</label>
+                    <input type="text" class="form-control" name="family_profession" required>
+                </div>
+            </div>
+        </li>
+    </template>
+
+    <!-- Previous Residence Template (hidden) -->
+    <template id="previousResidenceTemplate">
+        <li class="dynamic-item previous-residence">
+            <button type="button" class="remove-btn remove-residence">×</button>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label required-field">From Place</label>
+                    <input type="text" class="form-control" name="residence_from_place" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label required-field">To Place</label>
+                    <input type="text" class="form-control" name="residence_to_place" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <label class="form-label required-field">Address</label>
+                    <textarea class="form-control" name="residence_address" rows="2" required></textarea>
+                </div>
+            </div>
+        </li>
+    </template>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize Feather icons
+        feather.replace();
+        
+        $(document).ready(function() {
+            // Check if user is verified
+            $.ajax({
+                url: '/check-verification/',
+                type: 'GET',
+                success: function(response) {
+                    if (!response.verified) {
+                        window.location.href = '/';
+                    }
+                },
+                error: function() {
+                    window.location.href = '/';
+                }
+            });
+            
+            // Age calculation from date of birth
+            $('#date_of_birth').on('change', function() {
+                calculateAge($(this), $('#age'));
+            });
+            
+            // Show/hide other profession field
+            $('#profession').on('change', function() {
+                if ($(this).val() === 'Others') {
+                    $('#otherProfessionDiv').show();
+                    $('#other_profession').prop('required', true);
+                } else {
+                    $('#otherProfessionDiv').hide();
+                    $('#other_profession').prop('required', false);
+                }
+            });
+            
+            // Show/hide serving certificate field
+            $('input[name="serving_employee"]').on('change', function() {
+                if ($('#serving_yes').is(':checked')) {
+                    $('#servingCertificateDiv').show();
+                    $('#serving_certificate').prop('required', true);
+                } else {
+                    $('#servingCertificateDiv').hide();
+                    $('#serving_certificate').prop('required', false);
+                }
+            });
+            
+            // Show/hide retired certificate field
+            $('input[name="retired_employee"]').on('change', function() {
+                if ($('#retired_yes').is(':checked')) {
+                    $('#retiredCertificateDiv').show();
+                    $('#retired_certificate').prop('required', true);
+                } else {
+                    $('#retiredCertificateDiv').hide();
+                    $('#retired_certificate').prop('required', false);
+                }
+            });
+            
+            // Show/hide Sikkim certificate field
+            $('input[name="sikkim_certificate"]').on('change', function() {
+                if ($('#sikkim_yes').is(':checked')) {
+                    $('#sikkimCertificateDiv').show();
+                    $('#sikkim_certificate_file').prop('required', true);
+                } else {
+                    $('#sikkimCertificateDiv').hide();
+                    $('#sikkim_certificate_file').prop('required', false);
+                }
+            });
+            
+            // Add family member
+            $('#addFamilyMemberBtn').click(function() {
+                const template = document.querySelector('#familyMemberTemplate');
+                const clone = document.importNode(template.content, true);
+                
+                // Add event handlers to the new elements
+                $(clone).find('.remove-family-member').click(function() {
+                    $(this).closest('.family-member').remove();
+                });
+                
+                $(clone).find('.family-dob').on('change', function() {
+                    calculateAge($(this), $(this).closest('.row').find('.family-age'));
+                });
+                
+                $('#familyMembersList').append(clone);
+                feather.replace();
+            });
+            
+            // Add previous residence
+            $('#addPreviousResidenceBtn').click(function() {
+                const template = document.querySelector('#previousResidenceTemplate');
+                const clone = document.importNode(template.content, true);
+                
+                // Add event handlers to the new elements
+                $(clone).find('.remove-residence').click(function() {
+                    $(this).closest('.previous-residence').remove();
+                });
+                
+                $('#previousResidencesList').append(clone);
+                feather.replace();
+            });
+            
+            // Form submission
+            $('#tenantRegistrationForm').submit(function(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                $('#submitBtn').prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...');
+                
+                // Create FormData object
+                const formData = new FormData(this);
+                
+                // Add family members data
+                const familyMembers = [];
+                $('.family-member').each(function(index) {
+                    const member = {
+                        first_name: $(this).find('input[name="family_first_name"]').val(),
+                        middle_name: $(this).find('input[name="family_middle_name"]').val(),
+                        last_name: $(this).find('input[name="family_last_name"]').val(),
+                        dob: $(this).find('input[name="family_dob"]').val(),
+                        age: $(this).find('input[name="family_age"]').val(),
+                        relationship: $(this).find('input[name="family_relationship"]').val(),
+                        profession: $(this).find('input[name="family_profession"]').val()
+                    };
+                    familyMembers.push(member);
+                });
+                
+                if (familyMembers.length > 0) {
+                    formData.append('family_members', JSON.stringify(familyMembers));
+                }
+                
+                // Add previous residences data
+                const previousResidences = [];
+                $('.previous-residence').each(function(index) {
+                    const residence = {
+                        from_place: $(this).find('input[name="residence_from_place"]').val(),
+                        to_place: $(this).find('input[name="residence_to_place"]').val(),
+                        address: $(this).find('textarea[name="residence_address"]').val()
+                    };
+                    previousResidences.push(residence);
+                });
+                
+                if (previousResidences.length > 0) {
+                    formData.append('previous_residences', JSON.stringify(previousResidences));
+                }
+                
+                // Submit form via AJAX
+                $.ajax({
+                    url: '/Registration/',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Registration submitted successfully!');
+                            window.location.href = response.redirect_url;
+                        } else {
+                            showError(response.error || 'Something went wrong. Please try again.');
+                        }
+                    },
+                    error: function(xhr) {
+                        showError(xhr.responseJSON?.error || 'Server error. Please try again.');
+                    },
+                    complete: function() {
+                        $('#submitBtn').prop('disabled', false).text('Submit Registration');
+                    }
+                });
+            });
+            
+            // Helper functions
+            function calculateAge(dobField, ageField) {
+                const dob = new Date(dobField.val());
+                if (dob instanceof Date && !isNaN(dob)) {
+                    const today = new Date();
+                    let age = today.getFullYear() - dob.getFullYear();
+                    const monthDiff = today.getMonth() - dob.getMonth();
+                    
+                    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                        age--;
+                    }
+                    
+                    ageField.val(age);
+                }
+            }
+            
+            function showError(message) {
+                $('#errorAlert').text(message).show();
+                $('html, body').animate({ scrollTop: 0 }, 'slow');
+                setTimeout(() => $('#errorAlert').fadeOut(), 5000);
+            }
+        });
+    </script>
+</body>
+</html>

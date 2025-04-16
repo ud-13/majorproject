@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Owner Registration - Tenant Verification System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding-bottom: 50px;
+        }
+        .header {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 40px;
+        }
+        .container {
+            max-width: 900px;
+        }
+        .form-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .section-title {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+            color: #343a40;
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .required-field::after {
+            content: "*";
+            color: red;
+            margin-left: 4px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            padding: 10px 25px;
+        }
+        .error-message {
+            color: #dc3545;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1>Home Owner Registration</h1>
+            <a href="/logout/" class="btn btn-outline-light">Back to Login</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="form-container">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} mb-4">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Personal Information Section -->
+                <div class="form-section">
+                    <h3 class="section-title">Personal Information</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_email" class="form-label required-field">Email Address</label>
+                            <input type="email" name="email" id="id_email" class="form-control" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="id_first_name" class="form-label required-field">First Name</label>
+                            <input type="text" name="first_name" id="id_first_name" class="form-control" required>
+                            {% if form.first_name.errors %}
+                                <div class="error-message">{{ form.first_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_middle_name" class="form-label">Middle Name</label>
+                            <input type="text" name="middle_name" id="id_middle_name" class="form-control">
+                            {% if form.middle_name.errors %}
+                                <div class="error-message">{{ form.middle_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_last_name" class="form-label required-field">Last Name</label>
+                            <input type="text" name="last_name" id="id_last_name" class="form-control" required>
+                            {% if form.last_name.errors %}
+                                <div class="error-message">{{ form.last_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="id_date_of_birth" class="form-label required-field">Date of Birth</label>
+                            <input type="date" name="date_of_birth" id="id_date_of_birth" class="form-control" required>
+                            {% if form.date_of_birth.errors %}
+                                <div class="error-message">{{ form.date_of_birth.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_age" class="form-label">Age</label>
+                            <input type="number" name="age" id="id_age" class="form-control" readonly>
+                            {% if form.age.errors %}
+                                <div class="error-message">{{ form.age.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="id_phone" class="form-label required-field">Phone Number</label>
+                            <input type="text" name="phone" id="id_phone" class="form-control" pattern="[0-9]{10,15}" required>
+                            {% if form.phone.errors %}
+                                <div class="error-message">{{ form.phone.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_photo" class="form-label required-field">Photo</label>
+                            <input type="file" name="photo" id="id_photo" class="form-control" accept="image/*" required>
+                            {% if form.photo.errors %}
+                                <div class="error-message">{{ form.photo.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Document Information Section -->
+                <div class="form-section">
+                    <h3 class="section-title">Document Information</h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_aadhar_card" class="form-label required-field">Aadhar Card</label>
+                            <input type="file" name="aadhar_card" id="id_aadhar_card" class="form-control" accept="image/*,.pdf" required>
+                            {% if form.aadhar_card.errors %}
+                                <div class="error-message">{{ form.aadhar_card.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_aadhar_number" class="form-label required-field">Aadhar Number</label>
+                            <input type="text" name="aadhar_number" id="id_aadhar_number" class="form-control" pattern="[0-9]{12}" required>
+                            {% if form.aadhar_number.errors %}
+                                <div class="error-message">{{ form.aadhar_number.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_sikkim_certificate" class="form-label required-field">Sikkim Certificate</label>
+                            <input type="file" name="sikkim_certificate" id="id_sikkim_certificate" class="form-control" accept="image/*,.pdf" required>
+                            {% if form.sikkim_certificate.errors %}
+                                <div class="error-message">{{ form.sikkim_certificate.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="id_residential_certificate" class="form-label required-field">Residential Certificate</label>
+                            <input type="file" name="residential_certificate" id="id_residential_certificate" class="form-control" accept="image/*,.pdf" required>
+                            {% if form.residential_certificate.errors %}
+                                <div class="error-message">{{ form.residential_certificate.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="id_land_parcha" class="form-label required-field">Land Parcha</label>
+                            <input type="file" name="land_parcha" id="id_land_parcha" class="form-control" accept="image/*,.pdf" required>
+                            {% if form.land_parcha.errors %}
+                                <div class="error-message">{{ form.land_parcha.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg">Register as Home Owner</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize Feather icons
+        feather.replace();
+        
+        $(document).ready(function() {
+            // Age calculation from date of birth
+            $('#id_date_of_birth').on('change', function() {
+                const dob = new Date($(this).val());
+                if (dob instanceof Date && !isNaN(dob)) {
+                    const today = new Date();
+                    let age = today.getFullYear() - dob.getFullYear();
+                    const monthDiff = today.getMonth() - dob.getMonth();
+                    
+                    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                        age--;
+                    }
+                    
+                    $('#id_age').val(age);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

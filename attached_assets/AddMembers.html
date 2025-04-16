@@ -1,0 +1,382 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tenant Details Form</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/header_footer.css' %}">
+  
+   
+  
+  <style>
+    /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #f8f9fa;
+    }
+
+    .form-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 800px;
+      margin: 2rem auto;
+    }
+
+    h1, h2, h3 {
+      color: #1a73e8;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .form-section {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #f9f9f9;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 0.5rem;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    input[type="date"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #1a73e8;
+      box-shadow: 0 0 5px rgba(26, 115, 232, 0.3);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .member-entry,
+    .residency-record {
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #fff;
+    }
+
+    .member-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .member-count {
+      font-weight: bold;
+      color: #555;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-primary {
+      background-color: #1a73e8;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #0d47a1;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: #c82333;
+    }
+
+    .btn-success {
+      background-color: #1a73e8;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background-color: #0d47a1;
+    }
+
+    .police-verification {
+      background: #f8f9fa;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 2rem 0;
+    }
+
+    .signature-section {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .date-signature {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+
+    .signature-preview {
+      margin-top: 1rem;
+      max-width: 150px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  {% include 'header.html' %}
+  <div class="form-container">
+    <!-- Family Members Section -->
+    <h2 class="section-title">Particulars of Dependents</h2>
+    <p style="margin-bottom: 1rem; color: #666;">
+      (Spouse, children, spouse of children, parents, grandparents, grandchildren and blood relations of the tenant who resides with tenant)
+    </p>
+    
+    <div class="form-section" id="familyMembersSection">
+      <div class="member-entry">
+        <div class="member-header">
+          <span class="member-count">Family Member #1</span>
+          <button type="button" class="btn btn-danger" onclick="removeMember(this)" style="display: none;">Remove</button>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" class="form-control" name="family_first_name[]" required>
+          </div>
+          <div class="form-group">
+            <label>Middle Name</label>
+            <input type="text" class="form-control" name="family_middle_name[]">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" class="form-control" name="family_last_name[]" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Date of Birth</label>
+            <input type="date" class="form-control" name="family_dob[]" onchange="calculateAge(this)" required>
+          </div>
+          <div class="form-group">
+            <label>Age</label>
+            <input type="text" class="form-control" name="family_age[]" readonly>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Relationship with Tenant</label>
+            <input type="text" class="form-control" name="family_relationship[]" required>
+          </div>
+          <div class="form-group">
+            <label>Profession</label>
+            <input type="text" class="form-control" name="family_profession[]" required>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <button type="button" class="btn btn-primary" onclick="addFamilyMember()">+ Add Family Member</button>
+
+    <!-- Previous Residences Section -->
+    <h2 class="section-title" style="margin-top: 2rem;">History of Residence</h2>
+    <p style="margin-bottom: 1rem; color: #666;">
+      Particulars of the places where the tenant has resided during the past (twelve) months
+    </p>
+    
+    <div class="form-section" id="residencesSection">
+      <div class="member-entry">
+        <div class="member-header">
+          <span class="member-count">Previous Residence #1</span>
+          <button type="button" class="btn btn-danger" onclick="removeResidence(this)" style="display: none;">Remove</button>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>From (Place)</label>
+            <input type="text" class="form-control" name="residence_from[]" required>
+          </div>
+          <div class="form-group">
+            <label>To (Place)</label>
+            <input type="text" class="form-control" name="residence_to[]" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Complete Address</label>
+          <textarea class="form-control" name="residence_address[]" rows="2" required></textarea>
+        </div>
+      </div>
+    </div>
+    
+    <button type="button" class="btn btn-primary" onclick="addResidence()">+ Add Previous Residence</button>
+
+    <!-- Police Verification Section -->
+    <div class="police-verification">
+      <h3 style="margin-bottom: 1rem; color: #1a73e8;">Previous Police Verification Details</h3>
+      <div class="form-group">
+        <label>If the tenant had resided under the jurisdiction of another police station in Sikkim and police verification had been carried out, name the Police Station:</label>
+        <input type="text" class="form-control" name="police_station" placeholder="Enter Police Station name">
+      </div>
+    </div>
+
+    <!-- Signature Section -->
+    <div class="signature-section">
+      <h3 style="margin-bottom: 1rem; color: #1a73e8;">Declaration and Signature</h3>
+      <div class="date-signature">
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" class="form-control" name="signature_date" required>
+        </div>
+        <div class="form-group">
+          <label>Upload Signature</label>
+          <input type="file" class="form-control" name="tenant_signature" accept="image/*" required onchange="previewSignature(event)">
+          <!-- Signature Preview Container -->
+          <div id="signaturePreviewContainer" style="margin-top: 1rem;">
+            <img id="signaturePreview" class="signature-preview" src="#" alt="Signature Preview" style="display: none;">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <div style="text-align: center; margin-top: 2rem;">
+      <button type="submit" class="btn btn-success">Submit</button>
+    </div>
+  </div>
+  {% include 'footer.html' %}
+
+  <script>
+    // Function to calculate age based on date of birth
+    function calculateAge(dobInput) {
+      const dob = new Date(dobInput.value);
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const monthDiff = today.getMonth() - dob.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+        age--;
+      }
+      const ageInput = dobInput.parentElement.nextElementSibling.querySelector('input');
+      ageInput.value = age;
+    }
+
+    // Function to add a new family member entry
+    function addFamilyMember() {
+      const section = document.getElementById('familyMembersSection');
+      const entries = section.getElementsByClassName('member-entry');
+      const newEntry = entries[0].cloneNode(true);
+      
+      newEntry.querySelector('.member-count').textContent = `Family Member #${entries.length + 1}`;
+      newEntry.querySelectorAll('input').forEach(input => input.value = '');
+      newEntry.querySelector('.btn-danger').style.display = 'block';
+      
+      // Add event listener for age calculation
+      const dobInput = newEntry.querySelector('input[name="family_dob[]"]');
+      dobInput.addEventListener('change', function() {
+        calculateAge(this);
+      });
+      
+      section.appendChild(newEntry);
+    }
+
+    // Function to add a new previous residence entry
+    function addResidence() {
+      const section = document.getElementById('residencesSection');
+      const entries = section.getElementsByClassName('member-entry');
+      const newEntry = entries[0].cloneNode(true);
+      
+      newEntry.querySelector('.member-count').textContent = `Previous Residence #${entries.length + 1}`;
+      newEntry.querySelectorAll('input, textarea').forEach(input => input.value = '');
+      newEntry.querySelector('.btn-danger').style.display = 'block';
+      
+      section.appendChild(newEntry);
+    }
+
+    // Function to remove a family member entry
+    function removeMember(button) {
+      const entry = button.closest('.member-entry');
+      const section = entry.parentElement;
+      
+      if (section.getElementsByClassName('member-entry').length > 1) {
+        entry.remove();
+        section.querySelectorAll('.member-count').forEach((count, index) => {
+          count.textContent = `Family Member #${index + 1}`;
+        });
+      }
+    }
+
+    // Function to remove a previous residence entry
+    function removeResidence(button) {
+      const entry = button.closest('.member-entry');
+      const section = entry.parentElement;
+      
+      if (section.getElementsByClassName('member-entry').length > 1) {
+        entry.remove();
+        section.querySelectorAll('.member-count').forEach((count, index) => {
+          count.textContent = `Previous Residence #${index + 1}`;
+        });
+      }
+    }
+
+    // Function to preview the uploaded signature
+    function previewSignature(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const preview = document.getElementById('signaturePreview');
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  </script>
+</body>
+</html>

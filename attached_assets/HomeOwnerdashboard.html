@@ -1,0 +1,421 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Owner Dashboard - Sikkim Tenant Verification Portal</title>
+    <link rel="stylesheet" href="{% static 'css/header_footer.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f0f4f8;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Main Container */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+
+        /* Header Section */
+        .dashboard-header {
+            background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .dashboard-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Tenant Requests Section */
+        .tenant-requests {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .tenant-requests h2 {
+            font-size: 1.75rem;
+            color: #1a73e8;
+            margin-bottom: 1.5rem;
+        }
+
+        .request-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .request-card {
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .request-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .request-card h3 {
+            font-size: 1.25rem;
+            color: #333;
+            margin-bottom: 0.75rem;
+        }
+
+        .request-card p {
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .request-card .status {
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+
+        .request-card .status.pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .request-card .status.approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .request-card .status.rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .request-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-view {
+            background-color: #1a73e8;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background-color: #0d47a1;
+        }
+
+        .btn-approve {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background-color: #218838;
+        }
+
+        .btn-reject {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background-color: #c82333;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .modal-content h2 {
+            font-size: 1.5rem;
+            color: #1a73e8;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-content .close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            color: #555;
+            cursor: pointer;
+        }
+
+        .modal-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-section h3 {
+            font-size: 1.25rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .modal-section p {
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-section img {
+            max-width: 150px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-top: 0.5rem;
+        }
+
+        .remark-section {
+            margin-top: 1.5rem;
+        }
+
+        .remark-section label {
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+
+        .remark-section textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            resize: vertical;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 1rem;
+            }
+
+            .request-list {
+                grid-template-columns: 1fr;
+            }
+
+            .request-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+
+    <div class="dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1>House Owner Dashboard</h1>
+            <p>Manage and verify tenant applications efficiently</p>
+        </div>
+
+        <!-- Tenant Requests Section -->
+        <div class="tenant-requests">
+            <h2>Tenant Verification Requests</h2>
+            <div class="request-list">
+                <!-- Example Request Card -->
+                <div class="request-card">
+                    <h3>Tenant: John Doe</h3>
+                    <p>Submitted On: March 18, 2025</p>
+                    <p>Phone: 9876543210</p>
+                    <p>Status: <span class="status pending">Pending</span></p>
+                    <div class="request-actions">
+                        <button class="btn btn-view" onclick="openModal('tenant1')">View Details</button>
+                        <button class="btn btn-approve" onclick="approveRequest('tenant1')">Approve</button>
+                        <button class="btn btn-reject" onclick="openRemarkModal('tenant1')">Reject</button>
+                    </div>
+                </div>
+
+                <!-- Add more request cards dynamically as needed -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Viewing Tenant Details -->
+    <div id="tenantDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Tenant Verification Details</h2>
+            <div class="modal-section">
+                <h3>Personal Details</h3>
+                <p>Name: John Doe</p>
+                <p>Date of Birth: 1990-05-15</p>
+                <p>Age: 34</p>
+                <p>Father's Name: Robert Doe</p>
+                <p>Passport Image: <br><img src="{% static 'img/sample_passport.jpg' %}" alt="Passport Image"></p>
+            </div>
+            <div class="modal-section">
+                <h3>Permanent Address</h3>
+                <p>Address: 123 Main Street, Gangtok</p>
+                <p>Village: Upper Bazaar</p>
+                <p>Tehsil: Gangtok</p>
+                <p>Post Office: Gangtok PO</p>
+                <p>Pin Code: 737101</p>
+                <p>Police Station: Gangtok PS</p>
+                <p>District: Gangtok</p>
+            </div>
+            <div class="modal-section">
+                <h3>Profession Details</h3>
+                <p>Profession: Private Employee</p>
+                <p>Serving Employee: No</p>
+                <p>Retired Employee: No</p>
+                <p>Sikkim Certificate: Yes</p>
+                <p>Certificate Image: <br><img src="{% static 'img/sample_certificate.jpg' %}" alt="Certificate Image"></p>
+            </div>
+            <div class="modal-section">
+                <h3>Dependents</h3>
+                <p>Family Member #1: Jane Doe, Spouse, 32</p>
+                <p>Family Member #2: Emily Doe, Daughter, 5</p>
+            </div>
+            <div class="modal-section">
+                <h3>History of Residence</h3>
+                <p>Residence #1: From: Siliguri, To: Gangtok, Address: 456 Hill Road</p>
+            </div>
+            <div class="modal-section">
+                <h3>Previous Police Verification</h3>
+                <p>Police Station: Siliguri PS</p>
+            </div>
+            <div class="modal-section">
+                <h3>Declaration</h3>
+                <p>Date: March 18, 2025</p>
+                <p>Signature: <br><img src="{% static 'img/sample_signature.jpg' %}" alt="Signature"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Rejection Remarks -->
+    <div id="remarkModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Reject Tenant Verification</h2>
+            <p>Tenant: John Doe</p>
+            <div class="remark-section">
+                <label for="remark">Reason for Rejection</label>
+                <textarea id="remark" rows="4" placeholder="Enter your remarks (e.g., 'Incorrect address details')"></textarea>
+            </div>
+            <div class="request-actions" style="margin-top: 1.5rem;">
+                <button class="btn btn-reject" onclick="submitRejection('tenant1')">Submit Rejection</button>
+            </div>
+        </div>
+    </div>
+
+    {% include 'footer.html' %}
+
+    <script>
+        // Open Tenant Details Modal
+        function openModal(tenantId) {
+            document.getElementById('tenantDetailsModal').style.display = 'flex';
+            // In a real implementation, fetch tenant data via AJAX based on tenantId
+        }
+
+        // Open Remark Modal for Rejection
+        function openRemarkModal(tenantId) {
+            document.getElementById('remarkModal').style.display = 'flex';
+            // In a real implementation, set tenant name dynamically
+        }
+
+        // Close Modal
+        function closeModal() {
+            document.getElementById('tenantDetailsModal').style.display = 'none';
+            document.getElementById('remarkModal').style.display = 'none';
+        }
+
+        // Approve Request
+        function approveRequest(tenantId) {
+            if (confirm('Are you sure you want to approve this tenant verification?')) {
+                alert('Tenant verification approved successfully!');
+                // Update status dynamically in a real implementation
+                // e.g., fetch(`/approve/${tenantId}`, { method: 'POST' });
+            }
+        }
+
+        // Submit Rejection with Remarks
+        function submitRejection(tenantId) {
+            const remark = document.getElementById('remark').value;
+            if (!remark) {
+                alert('Please provide a reason for rejection.');
+                return;
+            }
+            if (confirm('Are you sure you want to reject this tenant verification?')) {
+                alert(`Tenant verification rejected with remark: "${remark}"`);
+                closeModal();
+                // Update status dynamically in a real implementation
+                // e.g., fetch(`/reject/${tenantId}`, { method: 'POST', body: JSON.stringify({ remark }) });
+            }
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modals = document.getElementsByClassName('modal');
+            for (let modal of modals) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            }
+        };
+    </script>
+</body>
+</html>
