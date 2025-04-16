@@ -1,390 +1,803 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Police Dashboard - Tenant Verification System</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <title>Police Dashboard - Sikkim Tenant Verification Portal</title>
+    <link rel="stylesheet" href="{% static 'css/header_footer.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f0f4f8;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Main Container */
+        .dashboard-container {
+            max-width: 1300px;
+            margin: 2rem auto;
+            padding: 2rem;
+            flex: 1;
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header h2 {
+            font-size: 1.8rem;
+            color: #1a73e8;
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-header p {
+            color: #666;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-icon.blue {
+            background-color: #1a73e8;
+        }
+
+        .stat-icon.green {
+            background-color: #34a853;
+        }
+
+        .stat-icon.orange {
+            background-color: #ff9800;
+        }
+
+        .stat-icon.red {
+            background-color: #ea4335;
+        }
+
+        .stat-details h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-details p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Tables */
+        .table-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-header h3 {
+            font-size: 1.3rem;
+            color: #333;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+        }
+
+        .search-bar input {
+            border: none;
+            background: transparent;
+            margin-left: 0.5rem;
+            outline: none;
+            width: 200px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        table th {
+            font-weight: 600;
+            color: #555;
+            background-color: #f8f9fa;
+        }
+
+        table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-badge.pending {
+            background-color: #fff3e0;
+            color: #ff9800;
+        }
+
+        .status-badge.approved {
+            background-color: #e8f5e9;
+            color: #34a853;
+        }
+
+        .status-badge.rejected {
+            background-color: #fdeded;
+            color: #ea4335;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.4rem 1rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .btn i {
+            margin-right: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: #1a73e8;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1557b0;
+        }
+
+        .btn-success {
+            background-color: #34a853;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #2d9348;
+        }
+
+        .btn-danger {
+            background-color: #ea4335;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #d33426;
+        }
+
+        .btn-warning {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background-color: #e68a00;
+        }
+
+        .btn-info {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background-color: #138496;
+        }
+
+        .btn-payment {
+            background-color: #673ab7;
+            color: white;
+        }
+
+        .btn-payment:hover {
+            background-color: #5e35b1;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        .pagination button {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            border: 1px solid #eee;
+            margin: 0 0.25rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pagination button.active {
+            background-color: #1a73e8;
+            color: white;
+            border-color: #1a73e8;
+        }
+
+        .pagination button:hover:not(.active) {
+            border-color: #1a73e8;
+            color: #1a73e8;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-header h3 {
+            font-size: 1.3rem;
+            color: #333;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #777;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-body p {
+            margin-bottom: 1rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            border-top: 1px solid #eee;
+        }
+
+        /* Form elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1a73e8;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                padding: 1.5rem;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .search-bar {
+                margin-top: 1rem;
+                width: 100%;
+            }
+
+            .search-bar input {
+                width: 100%;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            table th, table td {
+                padding: 0.75rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* No tenants message */
+        .no-data-message {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #666;
+        }
+
+        .no-data-message i {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
+
+        .no-data-message h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
-    <header class="header">
-        <div class="container d-flex justify-content-between align-items-center">
-            <h1>Police Verification Dashboard</h1>
-            <div>
-                <a href="/index/?role=police" class="btn btn-outline-light me-2">Home</a>
-                <a href="/logout/" class="btn btn-outline-light">Logout</a>
-            </div>
+    {% include 'header.html' %}
+    
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h2>Police Dashboard</h2>
+            <p>Manage tenant verification and approval process</p>
         </div>
-    </header>
-
-    <div class="container my-4">
-        <div class="row mb-4">
-            <div class="col-md-4">
-                <div class="stat-card bg-primary text-white">
-                    <div class="stat-card-body">
-                        <div class="stat-icon">
-                            <i data-feather="clock"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3 class="stat-title">Pending Verifications</h3>
-                            <p class="stat-number">{{ tenants|length }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stat-card bg-success text-white">
-                    <div class="stat-card-body">
-                        <div class="stat-icon">
-                            <i data-feather="check-circle"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3 class="stat-title">Approved</h3>
-                            <p class="stat-number">{{ approved_count|default:"0" }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="stat-card bg-danger text-white">
-                    <div class="stat-card-body">
-                        <div class="stat-icon">
-                            <i data-feather="x-circle"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3 class="stat-title">Rejected</h3>
-                            <p class="stat-number">{{ rejected_count|default:"0" }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-{{ message.tags }}{% endif %} mb-4">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-
-        <div class="card">
-            <div class="card-header">
-                <h3 class="mb-0">Pending Tenant Verifications</h3>
-            </div>
-            <div class="card-body">
-                {% if tenants %}
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Phone</th>
-                                    <th>District</th>
-                                    <th>Profession</th>
-                                    <th>Date</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for tenant in tenants %}
-                                    <tr>
-                                        <td>{{ tenant.first_name }} {{ tenant.last_name }}</td>
-                                        <td>{{ tenant.tenant_phone_number }}</td>
-                                        <td>{{ tenant.district }}</td>
-                                        <td>{{ tenant.profession }}</td>
-                                        <td>{{ tenant.created_at|date:"M d, Y" }}</td>
-                                        <td>
-                                            <button type="button" class="btn btn-sm btn-primary view-tenant-btn" data-id="{{ tenant.id }}" data-bs-toggle="modal" data-bs-target="#tenantModal">
-                                                <i data-feather="eye" class="icon-sm"></i> View Details
-                                            </button>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <div class="empty-state">
-                        <div class="empty-icon">
-                            <i data-feather="check-square"></i>
-                        </div>
-                        <h4>No Pending Verifications</h4>
-                        <p class="text-muted">There are no tenant applications pending police verification at this time.</p>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-
-    <!-- Tenant Details Modal -->
-    <div class="modal fade" id="tenantModal" tabindex="-1" aria-labelledby="tenantModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="tenantModalLabel">Tenant Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="tenantDetails">
-                        <!-- This will be populated dynamically -->
-                        <div class="tenant-detail-section">
-                            <h3>Personal Information</h3>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <p><strong>Name:</strong> <span id="tenant-name"></span></p>
-                                    <p><strong>Father's Name:</strong> <span id="tenant-father"></span></p>
-                                    <p><strong>Phone:</strong> <span id="tenant-phone"></span></p>
-                                </div>
-                                <div class="col-md-4">
-                                    <p><strong>Date of Birth:</strong> <span id="tenant-dob"></span></p>
-                                    <p><strong>Age:</strong> <span id="tenant-age"></span></p>
-                                    <p><strong>Profession:</strong> <span id="tenant-profession"></span></p>
-                                </div>
-                                <div class="col-md-4 text-center">
-                                    <div class="tenant-photo-container">
-                                        <img id="tenant-photo" src="" alt="Tenant Photo" class="img-fluid">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="tenant-detail-section">
-                            <h3>Address Information</h3>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p><strong>Permanent Address:</strong> <span id="tenant-address"></span></p>
-                                    <p><strong>Village/Town:</strong> <span id="tenant-village"></span></p>
-                                    <p><strong>Tehsil:</strong> <span id="tenant-tehsil"></span></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>District:</strong> <span id="tenant-district"></span></p>
-                                    <p><strong>Post Office:</strong> <span id="tenant-post-office"></span></p>
-                                    <p><strong>Police Station:</strong> <span id="tenant-police-station"></span></p>
-                                    <p><strong>PIN Code:</strong> <span id="tenant-pin-code"></span></p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="tenant-detail-section">
-                            <h3>Family Members</h3>
-                            <div id="family-members-container">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Age</th>
-                                            <th>Relationship</th>
-                                            <th>Profession</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="family-members-list">
-                                        <!-- Will be populated dynamically -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        
-                        <div class="tenant-detail-section">
-                            <h3>Previous Residences</h3>
-                            <div id="previous-residences-container">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>From Place</th>
-                                            <th>To Place</th>
-                                            <th>Address</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="previous-residences-list">
-                                        <!-- Will be populated dynamically -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="verification-action mt-4 pt-3 border-top">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <form action="" method="post" id="approveForm">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-success w-100">
-                                        <i data-feather="check-circle" class="icon-sm me-2"></i> Approve Verification
-                                    </button>
-                                </form>
-                            </div>
-                            <div class="col-md-6">
-                                <button type="button" class="btn btn-danger w-100" id="rejectBtn" data-bs-toggle="collapse" data-bs-target="#rejectForm">
-                                    <i data-feather="x-circle" class="icon-sm me-2"></i> Reject Verification
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div class="collapse mt-3" id="rejectForm">
-                            <form action="" method="post" id="rejectFormElement">
-                                {% csrf_token %}
-                                <div class="mb-3">
-                                    <label for="remark" class="form-label">Rejection Reason (required)</label>
-                                    <textarea class="form-control" id="remark" name="remark" rows="3" required></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-danger">Submit Rejection</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/static/js/main.js"></script>
-    <script>
-        // Initialize Feather icons
-        feather.replace();
         
-        $(document).ready(function() {
-            // Check verification status
-            $.ajax({
-                url: '/check-verification/',
-                type: 'GET',
-                success: function(response) {
-                    if (!response.verified) {
-                        window.location.href = '/';
-                    }
-                },
-                error: function() {
-                    window.location.href = '/';
-                }
-            });
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-details">
+                    <h3>{{ tenants|length }}</h3>
+                    <p>Pending Verifications</p>
+                </div>
+            </div>
             
-            // View tenant details button
-            $('.view-tenant-btn').click(function() {
-                const tenantId = $(this).data('id');
-                
-                // Mock function to simulate tenant data
-                // This would normally be replaced with a real AJAX call to get tenant details
-                // In a real implementation, you'd fetch this data from the server using an API endpoint
-                const tenants = [
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-details">
+                    <h3>{{ approved_count|default:0 }}</h3>
+                    <p>Approved Applications</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon red">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="stat-details">
+                    <h3>{{ rejected_count|default:0 }}</h3>
+                    <p>Rejected Applications</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-details">
+                    <h3>{{ pending_count|default:0 }}</h3>
+                    <p>Processing</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <div class="table-header">
+                <h3>Tenant Verification Requests</h3>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search...">
+                </div>
+            </div>
+            
+            {% if tenants %}
+            <table id="tenantTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone Number</th>
+                        <th>District</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
                     {% for tenant in tenants %}
-                    {
-                        id: {{ tenant.id }},
-                        firstName: "{{ tenant.first_name }}",
-                        middleName: "{{ tenant.middle_name|default:'' }}",
-                        lastName: "{{ tenant.last_name }}",
-                        fatherName: "{{ tenant.father_name }}",
-                        phone: "{{ tenant.tenant_phone_number }}",
-                        dob: "{{ tenant.date_of_birth|date:'Y-m-d' }}",
-                        age: {{ tenant.age|default:0 }},
-                        profession: "{{ tenant.profession }}",
-                        photo: "{{ tenant.photo.url }}",
-                        address: "{{ tenant.permanent_address }}",
-                        village: "{{ tenant.village }}",
-                        tehsil: "{{ tenant.tehsil }}",
-                        district: "{{ tenant.district }}",
-                        postOffice: "{{ tenant.post_office }}",
-                        policeStation: "{{ tenant.police_station }}",
-                        pinCode: "{{ tenant.pin_code }}",
-                        familyMembers: [
-                            {% for fm in tenant.family_members.all %}
-                            {
-                                firstName: "{{ fm.first_name }}",
-                                middleName: "{{ fm.middle_name|default:'' }}",
-                                lastName: "{{ fm.last_name }}",
-                                age: {{ fm.age|default:0 }},
-                                relationship: "{{ fm.relationship }}",
-                                profession: "{{ fm.profession }}"
-                            }{% if not forloop.last %},{% endif %}
-                            {% endfor %}
-                        ],
-                        previousResidences: [
-                            {% for pr in tenant.Tenant_previousresidence.all %}
-                            {
-                                fromPlace: "{{ pr.from_place }}",
-                                toPlace: "{{ pr.to_place }}",
-                                address: "{{ pr.address }}"
-                            }{% if not forloop.last %},{% endif %}
-                            {% endfor %}
-                        ]
-                    }{% if not forloop.last %},{% endif %}
+                    <tr>
+                        <td>{{ tenant.first_name }} {% if tenant.middle_name %}{{ tenant.middle_name }}{% endif %} {{ tenant.last_name }}</td>
+                        <td>{{ tenant.tenant_phone_number }}</td>
+                        <td>{{ tenant.district }}</td>
+                        <td>
+                            <span class="status-badge 
+                                {% if tenant.police_status == 'pending' %}pending
+                                {% elif tenant.police_status == 'approved' %}approved
+                                {% else %}rejected{% endif %}">
+                                {{ tenant.police_status|title }}
+                            </span>
+                        </td>
+                        <td class="action-buttons">
+                            <button class="btn btn-info" onclick="viewTenantDetails({{ tenant.id }})">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            
+                            <a href="{% url 'payment' %}?tenant_id={{ tenant.id }}" class="btn btn-payment">
+                                <i class="fas fa-credit-card"></i> Payment
+                            </a>
+                            
+                            <button class="btn btn-success" onclick="openApproveModal({{ tenant.id }})">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+                            
+                            <button class="btn btn-danger" onclick="openRejectModal({{ tenant.id }})">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </td>
+                    </tr>
                     {% endfor %}
-                ];
+                </tbody>
+            </table>
+            
+            <div class="pagination">
+                <button><i class="fas fa-angle-left"></i></button>
+                <button class="active">1</button>
+                <button>2</button>
+                <button>3</button>
+                <button><i class="fas fa-angle-right"></i></button>
+            </div>
+            {% else %}
+            <div class="no-data-message">
+                <i class="fas fa-inbox"></i>
+                <h3>No pending verification requests</h3>
+                <p>There are currently no tenant applications requiring verification.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- View Tenant Modal -->
+    <div class="modal" id="viewTenantModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tenant Details</h3>
+                <button class="modal-close" onclick="closeModal('viewTenantModal')">&times;</button>
+            </div>
+            <div class="modal-body" id="tenantDetailsContent">
+                <!-- Content will be loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal('viewTenantModal')">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Approve Tenant Modal -->
+    <div class="modal" id="approveTenantModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Approve Tenant</h3>
+                <button class="modal-close" onclick="closeModal('approveTenantModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to approve this tenant? This will mark the police verification as complete and approved.</p>
                 
-                // Find the tenant with the matching ID
-                const tenant = tenants.find(t => t.id === tenantId);
+                <form id="approveForm" action="" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="approveRemarks">Remarks (Optional)</label>
+                        <textarea id="approveRemarks" name="remark" placeholder="Add any remarks or notes"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal('approveTenantModal')">Cancel</button>
+                <button class="btn btn-success" onclick="submitApproval()">Approve</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Reject Tenant Modal -->
+    <div class="modal" id="rejectTenantModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Reject Tenant</h3>
+                <button class="modal-close" onclick="closeModal('rejectTenantModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to reject this tenant? Please provide a reason for rejection.</p>
                 
-                if (tenant) {
-                    // Update the modal with tenant details
-                    $('#tenant-name').text(`${tenant.firstName} ${tenant.middleName ? tenant.middleName + ' ' : ''}${tenant.lastName}`);
-                    $('#tenant-father').text(tenant.fatherName);
-                    $('#tenant-phone').text(tenant.phone);
-                    $('#tenant-dob').text(new Date(tenant.dob).toLocaleDateString('en-US', { 
-                        day: 'numeric', month: 'long', year: 'numeric' 
-                    }));
-                    $('#tenant-age').text(tenant.age);
-                    $('#tenant-profession').text(tenant.profession);
-                    $('#tenant-address').text(tenant.address);
-                    $('#tenant-village').text(tenant.village);
-                    $('#tenant-tehsil').text(tenant.tehsil);
-                    $('#tenant-district').text(tenant.district);
-                    $('#tenant-post-office').text(tenant.postOffice);
-                    $('#tenant-police-station').text(tenant.policeStation);
-                    $('#tenant-pin-code').text(tenant.pinCode);
+                <form id="rejectForm" action="" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="rejectRemarks">Reason for Rejection (Required)</label>
+                        <textarea id="rejectRemarks" name="remark" placeholder="Enter reason for rejection" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal('rejectTenantModal')">Cancel</button>
+                <button class="btn btn-danger" onclick="submitRejection()">Reject</button>
+            </div>
+        </div>
+    </div>
+    
+    {% include 'footer.html' %}
+    
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            let searchText = this.value.toLowerCase();
+            let table = document.getElementById('tenantTable');
+            let rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            
+            for (let i = 0; i < rows.length; i++) {
+                let nameColumn = rows[i].getElementsByTagName('td')[0];
+                let phoneColumn = rows[i].getElementsByTagName('td')[1];
+                let districtColumn = rows[i].getElementsByTagName('td')[2];
+                
+                if (nameColumn && phoneColumn && districtColumn) {
+                    let nameText = nameColumn.textContent || nameColumn.innerText;
+                    let phoneText = phoneColumn.textContent || phoneColumn.innerText;
+                    let districtText = districtColumn.textContent || districtColumn.innerText;
                     
-                    // Set tenant photo
-                    if (tenant.photo) {
-                        $('#tenant-photo').attr('src', tenant.photo).show();
+                    if (nameText.toLowerCase().indexOf(searchText) > -1 || 
+                        phoneText.toLowerCase().indexOf(searchText) > -1 ||
+                        districtText.toLowerCase().indexOf(searchText) > -1) {
+                        rows[i].style.display = "";
                     } else {
-                        $('#tenant-photo').hide();
+                        rows[i].style.display = "none";
                     }
-                    
-                    // Clear and populate family members
-                    const familyMembersList = $('#family-members-list');
-                    familyMembersList.empty();
-                    
-                    if (tenant.familyMembers && tenant.familyMembers.length > 0) {
-                        tenant.familyMembers.forEach(member => {
-                            const name = `${member.firstName} ${member.middleName ? member.middleName + ' ' : ''}${member.lastName}`;
-                            familyMembersList.append(`
-                                <tr>
-                                    <td>${name}</td>
-                                    <td>${member.age}</td>
-                                    <td>${member.relationship}</td>
-                                    <td>${member.profession}</td>
-                                </tr>
-                            `);
-                        });
-                    } else {
-                        familyMembersList.append('<tr><td colspan="4" class="text-center">No family members listed</td></tr>');
-                    }
-                    
-                    // Clear and populate previous residences
-                    const previousResidencesList = $('#previous-residences-list');
-                    previousResidencesList.empty();
-                    
-                    if (tenant.previousResidences && tenant.previousResidences.length > 0) {
-                        tenant.previousResidences.forEach(residence => {
-                            previousResidencesList.append(`
-                                <tr>
-                                    <td>${residence.fromPlace}</td>
-                                    <td>${residence.toPlace}</td>
-                                    <td>${residence.address}</td>
-                                </tr>
-                            `);
-                        });
-                    } else {
-                        previousResidencesList.append('<tr><td colspan="3" class="text-center">No previous residences listed</td></tr>');
-                    }
-                    
-                    // Set form action URLs
-                    $('#approveForm').attr('action', `/police/approve/${tenantId}/`);
-                    $('#rejectFormElement').attr('action', `/police/reject/${tenantId}/`);
                 }
-            });
+            }
         });
+        
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+        
+        // View tenant details
+        function viewTenantDetails(tenantId) {
+            const detailsContent = document.getElementById('tenantDetailsContent');
+            detailsContent.innerHTML = `<div style="text-align: center; padding: 2rem;"><i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: #1a73e8;"></i><p style="margin-top: 1rem;">Loading tenant details...</p></div>`;
+            
+            openModal('viewTenantModal');
+            
+            // In a real application, you would fetch the tenant details from the server
+            // For this demo, we'll simulate a delay and then show mock data
+            setTimeout(() => {
+                detailsContent.innerHTML = `
+                    <div style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #eee;">
+                        <h4 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">Personal Information</h4>
+                        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 0.5rem;">
+                            <div style="font-weight: 500; color: #555;">Full Name:</div>
+                            <div>John Smith</div>
+                            <div style="font-weight: 500; color: #555;">Date of Birth:</div>
+                            <div>1985-05-15</div>
+                            <div style="font-weight: 500; color: #555;">Age:</div>
+                            <div>38</div>
+                            <div style="font-weight: 500; color: #555;">Phone Number:</div>
+                            <div>9876543210</div>
+                            <div style="font-weight: 500; color: #555;">Profession:</div>
+                            <div>Private Employee</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #eee;">
+                        <h4 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">Address Information</h4>
+                        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 0.5rem;">
+                            <div style="font-weight: 500; color: #555;">Permanent Address:</div>
+                            <div>123 Main Street, Gangtok, Sikkim</div>
+                            <div style="font-weight: 500; color: #555;">District:</div>
+                            <div>Gangtok</div>
+                            <div style="font-weight: 500; color: #555;">Pin Code:</div>
+                            <div>737101</div>
+                            <div style="font-weight: 500; color: #555;">Police Station:</div>
+                            <div>Gangtok</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid #eee;">
+                        <h4 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">Owner Information</h4>
+                        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 0.5rem;">
+                            <div style="font-weight: 500; color: #555;">Owner Phone:</div>
+                            <div>9876543201</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem;">Documents</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                            <div style="border: 1px solid #eee; border-radius: 8px; padding: 1rem; text-align: center;">
+                                <div style="font-weight: 500; margin-bottom: 0.5rem;">Photo</div>
+                                <img src="https://via.placeholder.com/150" alt="Tenant Photo" style="max-width: 100%; height: auto; border-radius: 4px;">
+                            </div>
+                            <div style="border: 1px solid #eee; border-radius: 8px; padding: 1rem; text-align: center;">
+                                <div style="font-weight: 500; margin-bottom: 0.5rem;">Signature</div>
+                                <img src="https://via.placeholder.com/150x50" alt="Signature" style="max-width: 100%; height: auto; border-radius: 4px;">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }, 1000);
+        }
+        
+        // Approve tenant
+        function openApproveModal(tenantId) {
+            const form = document.getElementById('approveForm');
+            form.action = `/police/approve/${tenantId}/`;
+            openModal('approveTenantModal');
+        }
+        
+        function submitApproval() {
+            document.getElementById('approveForm').submit();
+        }
+        
+        // Reject tenant
+        function openRejectModal(tenantId) {
+            const form = document.getElementById('rejectForm');
+            form.action = `/police/reject/${tenantId}/`;
+            openModal('rejectTenantModal');
+        }
+        
+        function submitRejection() {
+            const remarks = document.getElementById('rejectRemarks').value;
+            if (!remarks.trim()) {
+                alert('Please provide a reason for rejection');
+                return;
+            }
+            document.getElementById('rejectForm').submit();
+        }
+        
+        // Show success message if available
+        {% if messages %}
+        document.addEventListener('DOMContentLoaded', function() {
+            {% for message in messages %}
+            alert("{{ message }}");
+            {% endfor %}
+        });
+        {% endif %}
     </script>
 </body>
 </html>

@@ -1,0 +1,590 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment for Police Verification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/header_footer.css' %}">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .card-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a73e8;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .tenant-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .tenant-info h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .info-item {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        
+        .info-label {
+            font-weight: 500;
+            color: #555;
+            width: 150px;
+            min-width: 150px;
+        }
+        
+        .info-value {
+            color: #333;
+            flex: 1;
+        }
+        
+        .payment-options {
+            margin-top: 30px;
+        }
+        
+        .payment-heading {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        
+        .payment-amount {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a73e8;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+        }
+        
+        .payment-methods {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        
+        .payment-method {
+            flex: 1;
+            min-width: 120px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-method:hover {
+            border-color: #1a73e8;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .payment-method.active {
+            border-color: #1a73e8;
+            background-color: #f0f7ff;
+        }
+        
+        .payment-method img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+            object-fit: contain;
+        }
+        
+        .payment-method-name {
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .payment-form {
+            margin-top: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            border-color: #1a73e8;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.1);
+        }
+        
+        .btn-primary {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 30px auto 0;
+            padding: 14px 20px;
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .btn-primary:hover {
+            background: #1557b0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(26, 115, 232, 0.2);
+        }
+        
+        .btn-secondary {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 10px auto 0;
+            padding: 12px 20px;
+            background: transparent;
+            color: #1a73e8;
+            border: 1px solid #1a73e8;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .btn-secondary:hover {
+            background: #f0f7ff;
+        }
+        
+        .payment-success {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .success-icon {
+            font-size: 60px;
+            color: #34a853;
+            margin-bottom: 20px;
+        }
+        
+        .success-message {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .success-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .success-details p {
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .success-details strong {
+            color: #555;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .payment-methods {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .payment-method {
+                width: 100%;
+            }
+            
+            .info-item {
+                flex-direction: column;
+                margin-bottom: 15px;
+            }
+            
+            .info-label {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    
+    <div class="main-content">
+        <div class="card">
+            <h2 class="card-title">Police Verification Payment</h2>
+            
+            {% if tenant %}
+            <div class="tenant-info">
+                <h3>Tenant Information</h3>
+                <div class="info-item">
+                    <div class="info-label">Name:</div>
+                    <div class="info-value">{{ tenant.first_name }} {{ tenant.middle_name }} {{ tenant.last_name }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Phone Number:</div>
+                    <div class="info-value">{{ tenant.tenant_phone_number }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">District:</div>
+                    <div class="info-value">{{ tenant.district }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Permanent Address:</div>
+                    <div class="info-value">{{ tenant.permanent_address }}</div>
+                </div>
+            </div>
+            {% else %}
+            <div class="tenant-info">
+                <h3>Demo Payment</h3>
+                <div class="info-item">
+                    <div class="info-label">Name:</div>
+                    <div class="info-value">John Smith</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Phone Number:</div>
+                    <div class="info-value">9876543210</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">District:</div>
+                    <div class="info-value">Gangtok</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Permanent Address:</div>
+                    <div class="info-value">123 Main Street, Gangtok, Sikkim</div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <div id="paymentContainer">
+                <div class="payment-options">
+                    <h3 class="payment-heading">Choose Payment Method</h3>
+                    
+                    <div class="payment-amount">
+                        Amount to Pay: ₹150.00
+                    </div>
+                    
+                    <div class="payment-methods">
+                        <div class="payment-method" onclick="selectPaymentMethod('credit_card')">
+                            <img src="{% static 'images/credit-card.png' %}" alt="Credit Card" onerror="this.src='https://via.placeholder.com/60?text=Card'">
+                            <div class="payment-method-name">Credit/Debit Card</div>
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod('upi')">
+                            <img src="{% static 'images/upi.png' %}" alt="UPI" onerror="this.src='https://via.placeholder.com/60?text=UPI'">
+                            <div class="payment-method-name">UPI</div>
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod('netbanking')">
+                            <img src="{% static 'images/netbanking.png' %}" alt="Net Banking" onerror="this.src='https://via.placeholder.com/60?text=NetBanking'">
+                            <div class="payment-method-name">Net Banking</div>
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod('wallet')">
+                            <img src="{% static 'images/wallet.png' %}" alt="Wallet" onerror="this.src='https://via.placeholder.com/60?text=Wallet'">
+                            <div class="payment-method-name">Wallet</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="paymentForm" action="{% url 'process_payment' %}" method="post" class="payment-form">
+                    {% csrf_token %}
+                    
+                    {% if tenant %}
+                    <input type="hidden" name="tenant_id" value="{{ tenant.id }}">
+                    {% else %}
+                    <input type="hidden" name="tenant_id" value="1">
+                    {% endif %}
+                    
+                    <input type="hidden" name="amount" value="150.00">
+                    <input type="hidden" name="payment_method" id="payment_method" value="">
+                    
+                    <div id="creditCardFields" style="display: none;">
+                        <div class="form-group">
+                            <label for="card_number">Card Number</label>
+                            <input type="text" id="card_number" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+                        <div class="form-group">
+                            <label for="card_name">Card Holder Name</label>
+                            <input type="text" id="card_name" placeholder="Name on card">
+                        </div>
+                        <div style="display: flex; gap: 20px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label for="expiry_date">Expiry Date</label>
+                                <input type="text" id="expiry_date" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label for="cvv">CVV</label>
+                                <input type="password" id="cvv" placeholder="***" maxlength="3">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="upiFields" style="display: none;">
+                        <div class="form-group">
+                            <label for="upi_id">UPI ID</label>
+                            <input type="text" id="upi_id" placeholder="yourid@upi" name="upi_id">
+                        </div>
+                    </div>
+                    
+                    <div id="netbankingFields" style="display: none;">
+                        <div class="form-group">
+                            <label for="bank">Select Bank</label>
+                            <select id="bank" class="form-control">
+                                <option value="">Select a bank</option>
+                                <option value="sbi">State Bank of India</option>
+                                <option value="hdfc">HDFC Bank</option>
+                                <option value="icici">ICICI Bank</option>
+                                <option value="axis">Axis Bank</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="walletFields" style="display: none;">
+                        <div class="form-group">
+                            <label for="wallet_type">Select Wallet</label>
+                            <select id="wallet_type" class="form-control">
+                                <option value="">Select a wallet</option>
+                                <option value="paytm">Paytm</option>
+                                <option value="phonepe">PhonePe</option>
+                                <option value="amazon">Amazon Pay</option>
+                                <option value="mobikwik">Mobikwik</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="wallet_number">Mobile Number</label>
+                            <input type="text" id="wallet_number" placeholder="10-digit mobile number" maxlength="10">
+                        </div>
+                    </div>
+                    
+                    <button type="button" id="payButton" class="btn-primary" onclick="processPayment()">Pay ₹150.00</button>
+                    <a href="{% url 'Policedashboard' %}" class="btn-secondary">Cancel Payment</a>
+                </form>
+            </div>
+            
+            <div id="paymentSuccess" class="payment-success">
+                <div class="success-icon">✓</div>
+                <h3 class="success-message">Payment Successful!</h3>
+                <p>Thank you for your payment. The verification process is now complete.</p>
+                
+                <div class="success-details">
+                    <p>
+                        <strong>Amount Paid:</strong>
+                        <span>₹150.00</span>
+                    </p>
+                    <p>
+                        <strong>Payment Method:</strong>
+                        <span id="paidVia"></span>
+                    </p>
+                    <p>
+                        <strong>Transaction ID:</strong>
+                        <span id="transactionId"></span>
+                    </p>
+                    <p>
+                        <strong>Payment Date:</strong>
+                        <span id="paymentDate"></span>
+                    </p>
+                </div>
+                
+                <a href="{% url 'Policedashboard' %}" class="btn-primary">Return to Dashboard</a>
+            </div>
+        </div>
+    </div>
+    
+    {% include 'footer.html' %}
+    
+    <script>
+        function selectPaymentMethod(method) {
+            // Hide all method fields
+            document.getElementById('creditCardFields').style.display = 'none';
+            document.getElementById('upiFields').style.display = 'none';
+            document.getElementById('netbankingFields').style.display = 'none';
+            document.getElementById('walletFields').style.display = 'none';
+            
+            // Show selected method fields
+            if (method === 'credit_card') {
+                document.getElementById('creditCardFields').style.display = 'block';
+            } else if (method === 'upi') {
+                document.getElementById('upiFields').style.display = 'block';
+            } else if (method === 'netbanking') {
+                document.getElementById('netbankingFields').style.display = 'block';
+            } else if (method === 'wallet') {
+                document.getElementById('walletFields').style.display = 'block';
+            }
+            
+            // Set active class
+            document.querySelectorAll('.payment-method').forEach(method => {
+                method.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Set payment method in form
+            document.getElementById('payment_method').value = method;
+            
+            // Enable pay button
+            document.getElementById('payButton').disabled = false;
+        }
+        
+        function processPayment() {
+            const method = document.getElementById('payment_method').value;
+            
+            if (!method) {
+                alert('Please select a payment method');
+                return;
+            }
+            
+            // Simple validation
+            if (method === 'credit_card') {
+                const cardNumber = document.getElementById('card_number').value;
+                const cardName = document.getElementById('card_name').value;
+                const expiryDate = document.getElementById('expiry_date').value;
+                const cvv = document.getElementById('cvv').value;
+                
+                if (!cardNumber || !cardName || !expiryDate || !cvv) {
+                    alert('Please fill all card details');
+                    return;
+                }
+            } else if (method === 'upi') {
+                const upiId = document.getElementById('upi_id').value;
+                
+                if (!upiId || !upiId.includes('@')) {
+                    alert('Please enter a valid UPI ID');
+                    return;
+                }
+            } else if (method === 'netbanking') {
+                const bank = document.getElementById('bank').value;
+                
+                if (!bank) {
+                    alert('Please select a bank');
+                    return;
+                }
+            } else if (method === 'wallet') {
+                const walletType = document.getElementById('wallet_type').value;
+                const walletNumber = document.getElementById('wallet_number').value;
+                
+                if (!walletType || !walletNumber || walletNumber.length !== 10) {
+                    alert('Please fill all wallet details correctly');
+                    return;
+                }
+            }
+            
+            // Show processing state
+            const payButton = document.getElementById('payButton');
+            payButton.innerText = 'Processing...';
+            payButton.disabled = true;
+            
+            // Simulate payment processing
+            setTimeout(() => {
+                // Submit the form
+                document.getElementById('paymentForm').submit();
+                
+                // For demo, show success directly
+                // In a real app, this would happen after server response
+                showPaymentSuccess(method);
+            }, 2000);
+        }
+        
+        function showPaymentSuccess(method) {
+            // Hide payment form
+            document.getElementById('paymentContainer').style.display = 'none';
+            
+            // Show success message
+            document.getElementById('paymentSuccess').style.display = 'block';
+            
+            // Set payment details
+            let methodName = '';
+            switch(method) {
+                case 'credit_card': methodName = 'Credit/Debit Card'; break;
+                case 'upi': methodName = 'UPI'; break;
+                case 'netbanking': methodName = 'Net Banking'; break;
+                case 'wallet': methodName = 'Wallet'; break;
+                default: methodName = 'Online Payment';
+            }
+            
+            document.getElementById('paidVia').textContent = methodName;
+            
+            // Generate random transaction ID
+            const transactionId = 'TXN' + Math.random().toString(36).substr(2, 9).toUpperCase();
+            document.getElementById('transactionId').textContent = transactionId;
+            
+            // Current date
+            const now = new Date();
+            const formattedDate = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+            document.getElementById('paymentDate').textContent = formattedDate;
+        }
+    </script>
+</body>
+</html>
