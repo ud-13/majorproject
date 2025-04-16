@@ -1,27 +1,20 @@
 {% load static %}
 <header class="header">
-    <div class="header-container">
-        <div class="logo-container">
-            <img src="{% static 'images/sikkimlogo.png' %}" alt="Sikkim Logo" class="logo">
-            <h1>Sikkim Tenant Verification Portal</h1>
-        </div>
-        <nav class="navigation">
-            <ul>
-                <li><a href="{% url 'login' %}">Home</a></li>
-                {% if user.is_authenticated %}
-                    {% if user.role == 'tenant' %}
-                        <li><a href="{% url 'ApplicationStatus' %}">Application Status</a></li>
-                    {% elif user.role == 'home_owner' %}
-                        <li><a href="{% url 'HomeOwnerdashboard' %}">Dashboard</a></li>
-                    {% elif user.role == 'police' %}
-                        <li><a href="{% url 'Policedashboard' %}">Dashboard</a></li>
-                    {% endif %}
-                    <li><a href="{% url 'logout' %}">Logout</a></li>
-                {% else %}
-                    <li><a href="{% url 'signup_Homeowner' %}">Register as Home Owner</a></li>
-                    <li><a href="{% url 'SignUpPolice' %}">Register as Police</a></li>
-                {% endif %}
-            </ul>
-        </nav>
+    <div class="logo-placeholder">
+        <img src="{% static 'images/sikkimlogo.png' %}" alt="Sikkim Government Logo" onerror="this.src='https://via.placeholder.com/50x50?text=Logo'">
     </div>
+    <div class="title-container">
+        <h1 class="portal-title">Sikkim Tenant Verification Portal</h1>
+    </div>
+    
+    {% if request.session.verified_email %}
+    <div class="logout-container">
+        <form action="{% url 'logout' %}" method="post" class="logout-form">
+            {% csrf_token %}
+            <button type="submit" class="logout-button">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </form>
+    </div>
+    {% endif %}
 </header>
