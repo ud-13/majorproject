@@ -27,6 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '89d0861d-aeb1-4734-8173-9926790c7772-00-3oxn964nzv0gc.riker.replit.dev', '*']
 
+# CSRF Trusted Origins
+CSRF_TRUSTED_ORIGINS = ['https://89d0861d-aeb1-4734-8173-9926790c7772-00-3oxn964nzv0gc.riker.replit.dev', 'https://*.replit.dev', 'https://*.repl.co']
+
 
 # Application definition
 
@@ -55,7 +58,10 @@ ROOT_URLCONF = 'Tenant.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS':[os.path.join(BASE_DIR, 'Template')],
+        'DIRS':[
+            os.path.join(BASE_DIR, 'Template'),
+            os.path.join(BASE_DIR, 'attached_assets')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
