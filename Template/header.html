@@ -1,0 +1,64 @@
+{% load static %}
+<header class="header">
+    <div class="logo-placeholder">
+        <img src="{% static 'img/sikkimlogo.png' %}" alt="Sikkim Government Logo">
+    </div>
+    <div class="title-container">
+        <h1 class="portal-title">Sikkim Tenant Verification Portal</h1>
+    </div>
+    
+</header>
+
+<style>
+    /* Header Styles */
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #1a73e8; /* Blue background */
+        padding: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo-placeholder img {
+        height: 50px; /* Adjust logo size */
+    }
+
+    .title-container .portal-title {
+        color: white;
+        font-size: 1.5rem;
+        margin: 0;
+    }
+
+    /* Logout Button Styles */
+    .logout-container {
+        margin-left: auto; /* Push logout button to the right */
+    }
+
+    .logout-form {
+        display: inline-block;
+    }
+
+    .logout-button {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        transition: opacity 0.3s ease;
+    }
+
+    .logout-button:hover {
+        opacity: 0.8; /* Slight fade on hover */
+    }
+
+    .logout-icon {
+        height: 20px; /* Adjust icon size */
+        width: 20px;
+    }
+</style>
