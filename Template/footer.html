@@ -1,26 +1,53 @@
-{% load static %}
+<!-- footer.html -->
 <footer class="footer">
-    <div class="footer-container">
-        <div class="footer-section">
-            <h3>About</h3>
-            <p>The Sikkim Tenant Verification Portal is an initiative by the Government of Sikkim to ensure the safety and security of residents by verifying tenant information.</p>
+    <div class="footer-content">
+        <div class="footer-info">
+            <p>Contact: <a href="mailto:tenant.verification@sikkim.gov.in">tenant.verification@sikkim.gov.in</a> | Phone: 03592-222222</p>
+            <p>© 2025 Sikkim Tenant Verification Portal. All rights reserved.</p>
         </div>
-        <div class="footer-section">
-            <h3>Quick Links</h3>
-            <ul>
-                <li><a href="{% url 'login' %}">Home</a></li>
-                <li><a href="{% url 'signup_Homeowner' %}">Register as Home Owner</a></li>
-                <li><a href="{% url 'SignUpPolice' %}">Register as Police</a></li>
-            </ul>
-        </div>
-        <div class="footer-section">
-            <h3>Contact</h3>
-            <p>Email: info@sikkimtenant.gov.in</p>
-            <p>Phone: +91-1234567890</p>
-            <p>Address: Gangtok, Sikkim, India</p>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <p>&copy; 2025 Sikkim Tenant Verification Portal. All rights reserved.</p>
     </div>
 </footer>
+
+<style>
+    .footer {
+        background-color: #1a73e8;
+        color: #fff;
+        padding: 1.5rem 2rem;
+        margin-top: auto;
+    }
+    
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .footer-info {
+        text-align: center;
+    }
+    
+    .footer-info p {
+        margin: 0.5rem 0;
+        font-size: 0.9rem;
+    }
+    
+    .footer a {
+        color: #fff;
+        text-decoration: none;
+        transition: opacity 0.3s;
+    }
+    
+    .footer a:hover {
+        opacity: 0.8;
+        text-decoration: underline;
+    }
+    
+    @media (max-width: 768px) {
+        .footer {
+            padding: 1rem;
+        }
+        
+        .footer-info p {
+            font-size: 0.8rem;
+        }
+    }
+</style>
