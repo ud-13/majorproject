@@ -316,7 +316,7 @@ def Registration(request):
                 return JsonResponse({
                     'success': True,
                     'message': 'Registration successful',
-                    'redirect_url': reverse('ApplicationStatus')
+                    'redirect_url': reverse('payment') + f'?tenant_id={tenant.id}'
                 })
 
         except Exception as e:
