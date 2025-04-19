@@ -68,8 +68,10 @@
                                             <th>Name</th>
                                             <th>Phone</th>
                                             <th>District</th>
+                                            <th>Profession</th>
                                             <th>Status</th>
                                             <th>Submitted</th>
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -78,9 +80,10 @@
                                                 <td>{{ tenant.first_name }} {{ tenant.last_name }}</td>
                                                 <td>{{ tenant.tenant_phone_number }}</td>
                                                 <td>{{ tenant.district }}</td>
+                                                <td>{{ tenant.profession }}</td>
                                                 <td>
                                                     {% if tenant.status == 'pending' %}
-                                                        <span class="badge bg-warning text-dark">Pending</span>
+                                                        <span class="badge bg-warning text-dark">Pending Review</span>
                                                     {% elif tenant.status == 'approved' %}
                                                         {% if tenant.police_status == 'pending' %}
                                                             <span class="badge bg-info">Police Verification Pending</span>
@@ -94,6 +97,11 @@
                                                     {% endif %}
                                                 </td>
                                                 <td>{{ tenant.created_at|date:"M d, Y" }}</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewTenantModal{{ tenant.id }}">
+                                                        View Details
+                                                    </button>
+                                                </td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>

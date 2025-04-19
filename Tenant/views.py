@@ -90,9 +90,9 @@ def HomeOwnerdashboard(request):
         user = User.objects.filter(email=email).first()
         if user and user.role == 'home_owner':
             owner = HomeOwner.objects.filter(user=user).first()
-            # Get all tenants who have this home owner's phone number
             if owner:
-                tenants = Tenant.objects.filter(owner_phone_number=owner.phone)
+                # Get all tenants who have this home owner's phone number, ordered by creation date
+                tenants = Tenant.objects.filter(owner_phone_number=owner.phone).order_by('-created_at')
     
     return render(request, 'HomeOwnerdashboard.html', {
         'owner': owner,
