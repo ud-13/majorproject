@@ -22,6 +22,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path('approve_tenant/<int:tenant_id>/', views.approve_tenant, name='approve_tenant'),
+    path('reject_tenant/<int:tenant_id>/', views.reject_tenant, name='reject_tenant'),
     path('admin/', admin.site.urls),
     path('index/', views.index, name='index'),
     path('', views.new_login, name='login'),

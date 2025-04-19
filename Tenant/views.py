@@ -99,6 +99,20 @@ def HomeOwnerdashboard(request):
         'tenants': tenants
     })
 
+def approve_tenant(request, tenant_id):
+    tenant = get_object_or_404(Tenant, id=tenant_id)
+    tenant.status = 'approved'
+    tenant.save()
+    messages.success(request, 'Tenant application approved successfully.')
+    return redirect('HomeOwnerdashboard')
+
+def reject_tenant(request, tenant_id):
+    tenant = get_object_or_404(Tenant, id=tenant_id)
+    tenant.status = 'rejected'
+    tenant.save()
+    messages.success(request, 'Tenant application rejected.')
+    return redirect('HomeOwnerdashboard')
+
 def Policedashboard(request):
     # For police, show only approved tenants that need police verification
     tenants = Tenant.objects.filter(status='approved', police_status='pending')
