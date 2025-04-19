@@ -478,20 +478,54 @@ def process_payment(request):
     if request.method == 'POST':
         tenant_id = request.POST.get('tenant_id')
         payment_method = request.POST.get('payment_method')
-        amount = request.POST.get('amount')
-        
-        # In a real scenario, you would process the payment with a payment gateway
-        # For now, we'll just mark the tenant as verified
+        amount = request.POST.get('amount', '150.00')
         
         try:
-            tenant = Tenant.objects.get(id=tenant_id)
-            tenant.police_status = 'approved'
-            tenant.save()
+            # Validate tenant if ID is provided
+            tenant = None
+            if tenant_id:
+                tenant = get_object_or_404(Tenant, id=tenant_id)
             
-            messages.success(request, "Payment successful! Tenant has been verified.")
-            return redirect('Policedashboard')
+            # In a real scenario, you would integrate with a payment gateway here
+            # For demo purposes, we'll simulate a successful payment
+            
+            # Update tenant status if tenant exists
+            if tenant:
+                tenant.police_status = 'approved'
+                tenant.save()
+                
+                # Send email notification
+                try:
+                    send_mail(
+                        'Payment Successful - Police Verification',
+                        f'Dear {tenant.first_name} {tenant.last_name},\n\nYour payment of ₹{amount} for police verification has been received successfully. Your verification process will be completed soon.',
+                        settings.DEFAULT_FROM_EMAIL,
+                        [tenant.user.email],
+                        fail_silently=True,
+                    )
+                except Exception as e:
+                    logger.error(f"Email error: {str(e)}")
+            
+            messages.success(request, "Payment successful! The verification process will be completed soon.")
+            return JsonResponse({
+                'success': True,
+                'message': 'Payment processed successfully',
+                'redirect_url': reverse('Policedashboard')
+            })
             
         except Tenant.DoesNotExist:
-            messages.error(request, "Tenant not found")
+            return JsonResponse({
+                'success': False,
+                'error': 'Tenant not found'
+            }, status=404)
+        except Exception as e:
+            logger.error(f"Payment processing error: {str(e)}")
+            return JsonResponse({
+                'success': False,
+                'error': 'An error occurred while processing the payment'
+            }, status=500)
     
-    return redirect('payment')
+    return JsonResponse({
+        'success': False,
+        'error': 'Invalid request method'
+    }, status=405)

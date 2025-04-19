@@ -285,11 +285,11 @@
 </head>
 <body>
     {% include 'header.html' %}
-    
+
     <div class="main-content">
         <div class="card">
             <h2 class="card-title">Police Verification Payment</h2>
-            
+
             {% if tenant %}
             <div class="tenant-info">
                 <h3>Tenant Information</h3>
@@ -331,79 +331,77 @@
                 </div>
             </div>
             {% endif %}
-            
+
             <div id="paymentContainer">
                 <div class="payment-options">
                     <h3 class="payment-heading">Choose Payment Method</h3>
-                    
+
                     <div class="payment-amount">
                         Amount to Pay: ₹150.00
                     </div>
-                    
+
                     <div class="payment-methods">
                         <div class="payment-method" onclick="selectPaymentMethod('credit_card')">
-                            <img src="{% static 'images/credit-card.png' %}" alt="Credit Card" onerror="this.src='https://via.placeholder.com/60?text=Card'">
+                            <img src="{% static 'images/credit-card.png' %}" alt="Credit Card">
                             <div class="payment-method-name">Credit/Debit Card</div>
                         </div>
                         <div class="payment-method" onclick="selectPaymentMethod('upi')">
-                            <img src="{% static 'images/upi.png' %}" alt="UPI" onerror="this.src='https://via.placeholder.com/60?text=UPI'">
+                            <img src="{% static 'images/upi.png' %}" alt="UPI">
                             <div class="payment-method-name">UPI</div>
                         </div>
                         <div class="payment-method" onclick="selectPaymentMethod('netbanking')">
-                            <img src="{% static 'images/netbanking.png' %}" alt="Net Banking" onerror="this.src='https://via.placeholder.com/60?text=NetBanking'">
+                            <img src="{% static 'images/netbanking.png' %}" alt="Net Banking">
                             <div class="payment-method-name">Net Banking</div>
                         </div>
                         <div class="payment-method" onclick="selectPaymentMethod('wallet')">
-                            <img src="{% static 'images/wallet.png' %}" alt="Wallet" onerror="this.src='https://via.placeholder.com/60?text=Wallet'">
+                            <img src="{% static 'images/wallet.png' %}" alt="Wallet">
                             <div class="payment-method-name">Wallet</div>
                         </div>
                     </div>
                 </div>
-                
+
                 <form id="paymentForm" action="{% url 'process_payment' %}" method="post" class="payment-form">
                     {% csrf_token %}
-                    
+
                     {% if tenant %}
                     <input type="hidden" name="tenant_id" value="{{ tenant.id }}">
-                    {% else %}
-                    <input type="hidden" name="tenant_id" value="1">
                     {% endif %}
-                    
+
                     <input type="hidden" name="amount" value="150.00">
                     <input type="hidden" name="payment_method" id="payment_method" value="">
-                    
+
                     <div id="creditCardFields" style="display: none;">
                         <div class="form-group">
                             <label for="card_number">Card Number</label>
-                            <input type="text" id="card_number" placeholder="1234 5678 9012 3456" maxlength="19">
+                            <input type="text" id="card_number" name="card_number" placeholder="1234 5678 9012 3456" maxlength="19">
                         </div>
                         <div class="form-group">
                             <label for="card_name">Card Holder Name</label>
-                            <input type="text" id="card_name" placeholder="Name on card">
+                            <input type="text" id="card_name" name="card_name" placeholder="Name on card">
                         </div>
                         <div style="display: flex; gap: 20px;">
                             <div class="form-group" style="flex: 1;">
                                 <label for="expiry_date">Expiry Date</label>
-                                <input type="text" id="expiry_date" placeholder="MM/YY" maxlength="5">
+                                <input type="text" id="expiry_date" name="expiry_date" placeholder="MM/YY" maxlength="5">
                             </div>
                             <div class="form-group" style="flex: 1;">
                                 <label for="cvv">CVV</label>
-                                <input type="password" id="cvv" placeholder="***" maxlength="3">
+                                <input type="password" id="cvv" name="cvv" placeholder="***" maxlength="3">
                             </div>
                         </div>
                     </div>
-                    
+
                     <div id="upiFields" style="display: none;">
                         <div class="form-group">
                             <label for="upi_id">UPI ID</label>
-                            <input type="text" id="upi_id" placeholder="yourid@upi" name="upi_id">
+                            <input type="text" id="upi_id" name="upi_id" placeholder="yourid@upi">
                         </div>
                     </div>
-                    
+
                     <div id="netbankingFields" style="display: none;">
                         <div class="form-group">
                             <label for="bank">Select Bank</label>
-                            <select id="bank" class="form-control">
+                            <select id="bank" name="bank" class="form-control">
                                 <option value="">Select a bank</option>
                                 <option value="sbi">State Bank of India</option>
                                 <option value="hdfc">HDFC Bank</option>
@@ -412,11 +410,11 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <div id="walletFields" style="display: none;">
                         <div class="form-group">
                             <label for="wallet_type">Select Wallet</label>
-                            <select id="wallet_type" class="form-control">
+                            <select id="wallet_type" name="wallet_type" class="form-control">
                                 <option value="">Select a wallet</option>
                                 <option value="paytm">Paytm</option>
                                 <option value="phonepe">PhonePe</option>
@@ -426,20 +424,20 @@
                         </div>
                         <div class="form-group">
                             <label for="wallet_number">Mobile Number</label>
-                            <input type="text" id="wallet_number" placeholder="10-digit mobile number" maxlength="10">
+                            <input type="text" id="wallet_number" name="wallet_number" placeholder="10-digit mobile number" maxlength="10">
                         </div>
                     </div>
-                    
-                    <button type="button" id="payButton" class="btn-primary" onclick="processPayment()">Pay ₹150.00</button>
+
+                    <button type="submit" id="payButton" class="btn-primary" disabled>Pay ₹150.00</button>
                     <a href="{% url 'Policedashboard' %}" class="btn-secondary">Cancel Payment</a>
                 </form>
             </div>
-            
-            <div id="paymentSuccess" class="payment-success">
+
+            <div id="paymentSuccess" class="payment-success" style="display: none;">
                 <div class="success-icon">✓</div>
                 <h3 class="success-message">Payment Successful!</h3>
-                <p>Thank you for your payment. The verification process is now complete.</p>
-                
+                <p>Thank you for your payment. The verification process will be completed soon.</p>
+
                 <div class="success-details">
                     <p>
                         <strong>Amount Paid:</strong>
@@ -458,14 +456,14 @@
                         <span id="paymentDate"></span>
                     </p>
                 </div>
-                
+
                 <a href="{% url 'Policedashboard' %}" class="btn-primary">Return to Dashboard</a>
             </div>
         </div>
     </div>
-    
+
     {% include 'footer.html' %}
-    
+
     <script>
         function selectPaymentMethod(method) {
             // Hide all method fields
@@ -473,7 +471,7 @@
             document.getElementById('upiFields').style.display = 'none';
             document.getElementById('netbankingFields').style.display = 'none';
             document.getElementById('walletFields').style.display = 'none';
-            
+
             // Show selected method fields
             if (method === 'credit_card') {
                 document.getElementById('creditCardFields').style.display = 'block';
@@ -484,49 +482,48 @@
             } else if (method === 'wallet') {
                 document.getElementById('walletFields').style.display = 'block';
             }
-            
+
             // Set active class
             document.querySelectorAll('.payment-method').forEach(method => {
                 method.classList.remove('active');
             });
             event.currentTarget.classList.add('active');
-            
+
             // Set payment method in form
             document.getElementById('payment_method').value = method;
-            
+
             // Enable pay button
             document.getElementById('payButton').disabled = false;
         }
-        
-        function processPayment() {
+
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
             const method = document.getElementById('payment_method').value;
-            
+
             if (!method) {
                 alert('Please select a payment method');
                 return;
             }
-            
-            // Simple validation
+
+            // Form validation based on payment method
             if (method === 'credit_card') {
-                const cardNumber = document.getElementById('card_number').value;
+                const cardNumber = document.getElementById('card_number').value.replace(/\s/g, '');
                 const cardName = document.getElementById('card_name').value;
                 const expiryDate = document.getElementById('expiry_date').value;
                 const cvv = document.getElementById('cvv').value;
-                
-                if (!cardNumber || !cardName || !expiryDate || !cvv) {
-                    alert('Please fill all card details');
+
+                if (!cardNumber || cardNumber.length < 16 || !cardName || !expiryDate || !cvv) {
+                    alert('Please fill all card details correctly');
                     return;
                 }
             } else if (method === 'upi') {
                 const upiId = document.getElementById('upi_id').value;
-                
                 if (!upiId || !upiId.includes('@')) {
                     alert('Please enter a valid UPI ID');
                     return;
                 }
             } else if (method === 'netbanking') {
                 const bank = document.getElementById('bank').value;
-                
                 if (!bank) {
                     alert('Please select a bank');
                     return;
@@ -534,57 +531,15 @@
             } else if (method === 'wallet') {
                 const walletType = document.getElementById('wallet_type').value;
                 const walletNumber = document.getElementById('wallet_number').value;
-                
                 if (!walletType || !walletNumber || walletNumber.length !== 10) {
                     alert('Please fill all wallet details correctly');
                     return;
                 }
             }
-            
-            // Show processing state
-            const payButton = document.getElementById('payButton');
-            payButton.innerText = 'Processing...';
-            payButton.disabled = true;
-            
-            // Simulate payment processing
-            setTimeout(() => {
-                // Submit the form
-                document.getElementById('paymentForm').submit();
-                
-                // For demo, show success directly
-                // In a real app, this would happen after server response
-                showPaymentSuccess(method);
-            }, 2000);
-        }
-        
-        function showPaymentSuccess(method) {
-            // Hide payment form
-            document.getElementById('paymentContainer').style.display = 'none';
-            
-            // Show success message
-            document.getElementById('paymentSuccess').style.display = 'block';
-            
-            // Set payment details
-            let methodName = '';
-            switch(method) {
-                case 'credit_card': methodName = 'Credit/Debit Card'; break;
-                case 'upi': methodName = 'UPI'; break;
-                case 'netbanking': methodName = 'Net Banking'; break;
-                case 'wallet': methodName = 'Wallet'; break;
-                default: methodName = 'Online Payment';
-            }
-            
-            document.getElementById('paidVia').textContent = methodName;
-            
-            // Generate random transaction ID
-            const transactionId = 'TXN' + Math.random().toString(36).substr(2, 9).toUpperCase();
-            document.getElementById('transactionId').textContent = transactionId;
-            
-            // Current date
-            const now = new Date();
-            const formattedDate = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
-            document.getElementById('paymentDate').textContent = formattedDate;
-        }
+
+            // Submit the form
+            this.submit();
+        });
     </script>
 </body>
 </html>
