@@ -54,38 +54,38 @@ def SignUpPolice(request):
         if not email:
             messages.error(request, 'Email is required')
             return render(request, 'SignUpPolice.html')
-            
+
         # Create or get user with police role
         user, created = User.objects.get_or_create(
             email=email,
             defaults={'role': 'police', 'is_active': True}
         )
-        
+
         if not created:
             user.role = 'police'
             user.save()
-            
+
         messages.success(request, 'Police account registered successfully')
         return redirect('login')
-        
+
     return render(request, 'SignUpPolice.html')
 
 def ApplicationStatus(request):
     tenants = []
     email = request.session.get('verified_email')
-    
+
     if email:
         user = User.objects.filter(email=email).first()
         if user:
             tenants = Tenant.objects.filter(user=user)
-            
+
     return render(request, 'ApplicationStatus.html', {'tenants': tenants})
 
 def HomeOwnerdashboard(request):
     email = request.session.get('verified_email')
     owner = None
     tenants = []
-    
+
     if email:
         user = User.objects.filter(email=email).first()
         if user and user.role == 'home_owner':
@@ -93,7 +93,7 @@ def HomeOwnerdashboard(request):
             if owner:
                 # Get all tenants who have this home owner's phone number, ordered by creation date
                 tenants = Tenant.objects.filter(owner_phone_number=owner.phone).order_by('-created_at')
-    
+
     return render(request, 'HomeOwnerdashboard.html', {
         'owner': owner,
         'tenants': tenants
@@ -120,11 +120,11 @@ def Policedashboard(request):
 
 def police_approve_tenant(request, tenant_id):
     tenant = get_object_or_404(Tenant, id=tenant_id)
-    
+
     if request.method == 'POST':
         tenant.police_status = 'approved'
         tenant.save()
-        
+
         # Send notification email to tenant
         try:
             user = tenant.user
@@ -137,21 +137,21 @@ def police_approve_tenant(request, tenant_id):
             )
         except Exception as e:
             logger.error(f"Email error: {str(e)}")
-            
+
         messages.success(request, f"Tenant {tenant.first_name} {tenant.last_name} approved successfully.")
         return redirect('Policedashboard')
-        
+
     return render(request, 'Policedashboard.html', {'tenant': tenant})
 
 def police_reject_tenant(request, tenant_id):
     tenant = get_object_or_404(Tenant, id=tenant_id)
-    
+
     if request.method == 'POST':
         remark = request.POST.get('remark', '')
         tenant.police_status = 'rejected'
         tenant.police_remark = remark
         tenant.save()
-        
+
         # Send notification email to tenant
         try:
             user = tenant.user
@@ -164,10 +164,10 @@ def police_reject_tenant(request, tenant_id):
             )
         except Exception as e:
             logger.error(f"Email error: {str(e)}")
-            
+
         messages.success(request, f"Tenant {tenant.first_name} {tenant.last_name} rejected with remarks.")
         return redirect('Policedashboard')
-        
+
     return render(request, 'Policedashboard.html', {'tenant': tenant})
 
 @csrf_exempt
@@ -188,7 +188,7 @@ def Registration(request):
         if not request.session.get('verified_email'):
             return redirect('login')
         return render(request, 'Registration.html')
-    
+
     if request.method == 'POST':
         try:
             with transaction.atomic():
@@ -206,7 +206,7 @@ def Registration(request):
                     email=verified_email,
                     defaults={'role': 'tenant', 'is_active': True}
                 )
-                
+
                 # Handle file uploads
                 def handle_upload(file_field, upload_to):
                     if file_field in request.FILES:
@@ -248,7 +248,7 @@ def Registration(request):
                     'status': 'pending',  
                     'police_status': 'pending',  
                 }
-                
+
                 # Log data for debugging
                 logger.debug(f"Tenant data: {tenant_data}")
 
@@ -258,7 +258,7 @@ def Registration(request):
                     'permanent_address', 'post_office', 'pin_code', 'police_station',
                     'tenant_phone_number', 'owner_phone_number', 'signature_date'
                 ]
-                
+
                 missing_fields = [field for field in required_fields if not tenant_data.get(field)]
                 if missing_fields:
                     return JsonResponse({
@@ -277,7 +277,7 @@ def Registration(request):
 
                 # Create tenant
                 tenant = Tenant.objects.create(**tenant_data)
-                
+
                 # Process family members
                 family_members_json = request.POST.get('family_members')
                 if family_members_json:
@@ -294,7 +294,7 @@ def Registration(request):
                                 'relationship': fm_data.get('relationship', '').strip(),
                                 'profession': fm_data.get('profession', '').strip(),
                             }
-                            
+
                             # Calculate age if not provided
                             if not family_data['age'] and family_data['date_of_birth']:
                                 try:
@@ -303,7 +303,7 @@ def Registration(request):
                                     family_data['age'] = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
                                 except (ValueError, TypeError) as e:
                                     logger.error(f"Family member date conversion error: {str(e)}")
-                            
+
                             FamilyMember.objects.create(**family_data)
                     except json.JSONDecodeError:
                         logger.error("Failed to parse family members JSON")
@@ -346,7 +346,7 @@ def signup_homeowner(request):
         if not email:
             messages.error(request, 'Please verify your email first')
             return redirect('login')
-            
+
         # Get existing user or create new one
         user = User.objects.filter(email=email).first()
         if not user:
@@ -362,12 +362,12 @@ def signup_homeowner(request):
                 # Create HomeOwner object
                 home_owner = form.save(commit=False)
                 home_owner.user = user
-                
+
                 # Calculate age if not provided
                 if not home_owner.age and home_owner.date_of_birth:
                     today = timezone.now().date()
                     home_owner.age = today.year - home_owner.date_of_birth.year - ((today.month, today.day) < (home_owner.date_of_birth.month, home_owner.date_of_birth.day))
-                
+
                 home_owner.save()
                 messages.success(request, 'Account created successfully!')
                 return redirect('HomeOwnerdashboard')
@@ -377,7 +377,7 @@ def signup_homeowner(request):
         else:
             print(f"Form errors: {form.errors}")  # Debug print
             messages.error(request, 'Please correct the form errors')
-    
+
     form = HomeOwnerForm()
     return render(request, 'signup_homeowner.html', {'form': form})
 
@@ -388,23 +388,23 @@ def generate_otp():
 def send_otp(request):
     if request.method != 'POST':
         return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
-    
+
     email = request.POST.get('email')
     role = request.POST.get('role')
-    
+
     if not email or not role:
         return JsonResponse({'success': False, 'error': 'Email and role are required'}, status=400)
-    
+
     try:
         user, created = User.objects.get_or_create(
             email=email,
             defaults={'role': role, 'is_active': True}
         )
-        
+
         if not created and user.role != role:
             user.role = role
             user.save()
-            
+
         user.otp = generate_otp()
         user.otp_created_at = timezone.now()
         user.save()
@@ -426,49 +426,49 @@ def send_otp(request):
 def verify_otp(request):
     if request.method != 'POST':
         return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
-    
+
     email = request.POST.get('email', '').strip().lower()
     otp = request.POST.get('otp', '').strip()
     role = request.POST.get('role', 'tenant').strip().lower()
-    
+
     if not email or not otp:
         return JsonResponse({'success': False, 'error': 'Email and OTP are required'}, status=400)
-    
+
     try:
         user = User.objects.filter(email=email).first()
         if not user:
             return JsonResponse({'success': False, 'error': 'User not found'}, status=404)
-            
+
         # Verify OTP
         if not user.otp or user.otp != otp:
             return JsonResponse({'success': False, 'error': 'Invalid OTP'}, status=400)
-            
+
         # Check OTP expiration (5 minutes)
         if not user.otp_created_at or (timezone.now() - user.otp_created_at).total_seconds() > 300:
             return JsonResponse({'success': False, 'error': 'OTP has expired'}, status=400)
-        
+
         # Clear OTP
         user.otp = None
         user.save()
-        
+
         # Store the verified email in the session
         request.session['verified_email'] = email
-        
+
         # Redirect based on role
         redirect_url = reverse('index') + f'?role={role}'
         if role == 'tenant':
             redirect_url = reverse('Registration')
         elif role == 'home_owner':
-            redirect_url = reverse('signup_Homeowner')
+            redirect_url = reverse('signup_homeowner') #Corrected typo here
         elif role == 'police':
             redirect_url = reverse('Policedashboard')
-            
+
         return JsonResponse({
             'success': True, 
             'message': 'OTP verified successfully',
             'redirect_url': redirect_url
         })
-            
+
     except Exception as e:
         logger.error(f"OTP verification error: {str(e)}")
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
@@ -479,14 +479,14 @@ def payment(request):
     """
     tenant_id = request.GET.get('tenant_id')
     tenant = None
-    
+
     if tenant_id:
         try:
             tenant = Tenant.objects.get(id=tenant_id)
         except Tenant.DoesNotExist:
             messages.error(request, "Tenant not found")
             return redirect('Policedashboard')
-    
+
     return render(request, 'Payment.html', {'tenant': tenant})
 
 def process_payment(request):
@@ -497,21 +497,21 @@ def process_payment(request):
         tenant_id = request.POST.get('tenant_id')
         payment_method = request.POST.get('payment_method')
         amount = request.POST.get('amount', '150.00')
-        
+
         try:
             # Validate tenant if ID is provided
             tenant = None
             if tenant_id:
                 tenant = get_object_or_404(Tenant, id=tenant_id)
-            
+
             # In a real scenario, you would integrate with a payment gateway here
             # For demo purposes, we'll simulate a successful payment
-            
+
             # Update tenant status if tenant exists
             if tenant:
                 tenant.police_status = 'approved'
                 tenant.save()
-                
+
                 # Send email notification
                 try:
                     send_mail(
@@ -523,14 +523,14 @@ def process_payment(request):
                     )
                 except Exception as e:
                     logger.error(f"Email error: {str(e)}")
-            
+
             messages.success(request, "Payment successful! The verification process will be completed soon.")
             return JsonResponse({
                 'success': True,
                 'message': 'Payment processed successfully',
                 'redirect_url': reverse('Policedashboard')
             })
-            
+
         except Tenant.DoesNotExist:
             return JsonResponse({
                 'success': False,
@@ -542,7 +542,7 @@ def process_payment(request):
                 'success': False,
                 'error': 'An error occurred while processing the payment'
             }, status=500)
-    
+
     return JsonResponse({
         'success': False,
         'error': 'Invalid request method'
