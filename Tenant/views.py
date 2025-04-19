@@ -328,21 +328,24 @@ def Registration(request):
 
 def signup_homeowner(request):
     if request.method == 'POST':
-        # First, verify email and create user
         email = request.POST.get('email')
+        role = request.POST.get('role', 'home_owner')
+        
         if not email:
             messages.error(request, 'Email is required')
             return render(request, 'signup_homeowner.html', {'form': HomeOwnerForm()})
         
-        # Create or get user with home_owner role
+        # Check if user exists with different role
+        existing_user = User.objects.filter(email=email).first()
+        if existing_user:
+            messages.error(request, 'Email already registered with a different role')
+            return render(request, 'signup_homeowner.html', {'form': HomeOwnerForm()})
+            
+        # Create new user
         user, created = User.objects.get_or_create(
             email=email,
-            defaults={'role': 'home_owner', 'is_active': True}
+            defaults={'role': role, 'is_active': True}
         )
-        
-        if not created:
-            user.role = 'home_owner'
-            user.save()
         
         # Now handle the HomeOwner form
         form = HomeOwnerForm(request.POST, request.FILES)
