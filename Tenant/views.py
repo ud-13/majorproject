@@ -333,25 +333,37 @@ def signup_homeowner(request):
             messages.error(request, 'Please verify your email first')
             return redirect('login')
             
-        # Create or get user
-        user, created = User.objects.get_or_create(
-            email=email,
-            defaults={'role': 'home_owner', 'is_active': True}
-        )
-        
+        # Get existing user or create new one
+        user = User.objects.filter(email=email).first()
+        if not user:
+            user = User.objects.create(email=email, role='home_owner', is_active=True)
+        elif user.role != 'home_owner':
+            user.role = 'home_owner'
+            user.save()
+
+        # Handle form submission
         form = HomeOwnerForm(request.POST, request.FILES)
         if form.is_valid():
             try:
+                # Create HomeOwner object
                 home_owner = form.save(commit=False)
                 home_owner.user = user
+                
+                # Calculate age if not provided
+                if not home_owner.age and home_owner.date_of_birth:
+                    today = timezone.now().date()
+                    home_owner.age = today.year - home_owner.date_of_birth.year - ((today.month, today.day) < (home_owner.date_of_birth.month, home_owner.date_of_birth.day))
+                
                 home_owner.save()
                 messages.success(request, 'Account created successfully!')
                 return redirect('HomeOwnerdashboard')
             except Exception as e:
                 messages.error(request, f'Error saving data: {str(e)}')
+                print(f"Error: {str(e)}")  # Debug print
         else:
+            print(f"Form errors: {form.errors}")  # Debug print
             messages.error(request, 'Please correct the form errors')
-            
+    
     form = HomeOwnerForm()
     return render(request, 'signup_homeowner.html', {'form': form})
 
