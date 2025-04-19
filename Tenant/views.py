@@ -328,42 +328,31 @@ def Registration(request):
 
 def signup_homeowner(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
-        role = request.POST.get('role', 'home_owner')
-        
+        email = request.session.get('verified_email')
         if not email:
-            messages.error(request, 'Email is required')
-            return render(request, 'signup_homeowner.html', {'form': HomeOwnerForm()})
-        
-        # Check if user exists with different role
-        existing_user = User.objects.filter(email=email).first()
-        if existing_user:
-            messages.error(request, 'Email already registered with a different role')
-            return render(request, 'signup_homeowner.html', {'form': HomeOwnerForm()})
+            messages.error(request, 'Please verify your email first')
+            return redirect('login')
             
-        # Create new user
+        # Create or get user
         user, created = User.objects.get_or_create(
             email=email,
-            defaults={'role': role, 'is_active': True}
+            defaults={'role': 'home_owner', 'is_active': True}
         )
         
-        # Now handle the HomeOwner form
         form = HomeOwnerForm(request.POST, request.FILES)
         if form.is_valid():
-            home_owner = form.save(commit=False)
-            home_owner.user = user
-            home_owner.save()
+            try:
+                home_owner = form.save(commit=False)
+                home_owner.user = user
+                home_owner.save()
+                messages.success(request, 'Account created successfully!')
+                return redirect('HomeOwnerdashboard')
+            except Exception as e:
+                messages.error(request, f'Error saving data: {str(e)}')
+        else:
+            messages.error(request, 'Please correct the form errors')
             
-            # Store email in session
-            request.session['verified_email'] = email
-            
-            messages.success(request, 'Account created successfully!')
-            return redirect('HomeOwnerdashboard')
-            
-        messages.error(request, 'Please correct the errors below.')
-    else:
-        form = HomeOwnerForm()
-        
+    form = HomeOwnerForm()
     return render(request, 'signup_homeowner.html', {'form': form})
 
 def generate_otp():

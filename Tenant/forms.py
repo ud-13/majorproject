@@ -17,12 +17,9 @@ class TenantForm(forms.ModelForm):
         }
 
 class HomeOwnerForm(forms.ModelForm):
-    email = forms.EmailField(required=True)
-    
     class Meta:
         model = HomeOwner
-        fields = '__all__'
-        exclude = ['user', 'created_at', 'updated_at']
+        exclude = ['user']
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
             'photo': forms.FileInput(attrs={'accept': 'image/*'}),
@@ -31,12 +28,6 @@ class HomeOwnerForm(forms.ModelForm):
             'residential_certificate': forms.FileInput(attrs={'accept': 'image/*, .pdf'}),
             'land_parcha': forms.FileInput(attrs={'accept': 'image/*, .pdf'}),
         }
-    
-    def __init__(self, *args, **kwargs):
-        super(HomeOwnerForm, self).__init__(*args, **kwargs)
-        for field_name, field in self.fields.items():
-            if field_name != 'middle_name':
-                field.required = True
 
 class FamilyMemberForm(forms.ModelForm):
     class Meta:
