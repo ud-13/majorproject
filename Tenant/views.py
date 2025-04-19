@@ -83,16 +83,22 @@ def ApplicationStatus(request):
 
 def HomeOwnerdashboard(request):
     email = request.session.get('verified_email')
-    owner = None
-    tenants = []
+    if not email:
+        messages.error(request, 'Please log in first')
+        return redirect('login')
 
-    if email:
-        user = User.objects.filter(email=email).first()
-        if user and user.role == 'home_owner':
-            owner = HomeOwner.objects.filter(user=user).first()
-            if owner:
-                # Get all tenants who have this home owner's phone number, ordered by creation date
-                tenants = Tenant.objects.filter(owner_phone_number=owner.phone).order_by('-created_at')
+    user = User.objects.filter(email=email).first()
+    if not user or user.role != 'home_owner':
+        messages.error(request, 'Access denied. Please log in as a home owner.')
+        return redirect('login')
+
+    owner = HomeOwner.objects.filter(user=user).first()
+    if not owner:
+        messages.error(request, 'Please complete your profile first')
+        return redirect('signup_homeowner')
+
+    # Get all tenants who have this home owner's phone number, ordered by creation date
+    tenants = Tenant.objects.filter(owner_phone_number=owner.phone).order_by('-created_at')
 
     return render(request, 'HomeOwnerdashboard.html', {
         'owner': owner,
@@ -369,14 +375,15 @@ def signup_homeowner(request):
                     home_owner.age = today.year - home_owner.date_of_birth.year - ((today.month, today.day) < (home_owner.date_of_birth.month, home_owner.date_of_birth.day))
 
                 home_owner.save()
+                request.session['verified_email'] = email  # Ensure email stays in session
                 messages.success(request, 'Account created successfully!')
                 return redirect('HomeOwnerdashboard')
             except Exception as e:
                 messages.error(request, f'Error saving data: {str(e)}')
-                print(f"Error: {str(e)}")  # Debug print
+                logger.error(f"Error saving homeowner: {str(e)}")
         else:
-            print(f"Form errors: {form.errors}")  # Debug print
             messages.error(request, 'Please correct the form errors')
+            logger.error(f"Form errors: {form.errors}")
 
     form = HomeOwnerForm()
     return render(request, 'signup_homeowner.html', {'form': form})
