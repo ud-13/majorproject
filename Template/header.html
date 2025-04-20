@@ -1,20 +1,117 @@
+
 {% load static %}
 <header class="header">
-    <div class="logo-placeholder">
-        <img src="{% static 'images/sikkimlogo.png' %}" alt="Sikkim Government Logo" onerror="this.src='https://via.placeholder.com/50x50?text=Logo'">
+    <div class="header-container">
+        <div class="logo-section">
+            <img src="{% static 'images/sikkimlogo.png' %}" alt="Sikkim Government Logo" class="govt-logo">
+            <div class="portal-titles">
+                <h1>Sikkim Tenant Verification Portal</h1>
+                <h2>Government of Sikkim</h2>
+            </div>
+        </div>
+        {% if request.session.verified_email %}
+        <div class="user-actions">
+            <a href="{% url 'index' %}" class="nav-link">Home</a>
+            <form action="{% url 'logout' %}" method="post" class="logout-form">
+                {% csrf_token %}
+                <button type="submit" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </form>
+        </div>
+        {% endif %}
     </div>
-    <div class="title-container">
-        <h1 class="portal-title">Sikkim Tenant Verification Portal</h1>
-    </div>
-    
-    {% if request.session.verified_email %}
-    <div class="logout-container">
-        <form action="{% url 'logout' %}" method="post" class="logout-form">
-            {% csrf_token %}
-            <button type="submit" class="logout-button">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
-        </form>
-    </div>
-    {% endif %}
 </header>
+
+<style>
+.header {
+    background: linear-gradient(to right, #1a237e, #0d47a1);
+    padding: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.govt-logo {
+    width: 80px;
+    height: auto;
+}
+
+.portal-titles h1 {
+    color: white;
+    font-size: 1.8rem;
+    margin: 0;
+    font-weight: 600;
+}
+
+.portal-titles h2 {
+    color: #e3f2fd;
+    font-size: 1.2rem;
+    margin: 0.3rem 0 0 0;
+    font-weight: 500;
+}
+
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.nav-link:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+
+.logout-btn {
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: white;
+    color: #0d47a1;
+}
+
+@media (max-width: 768px) {
+    .portal-titles h1 {
+        font-size: 1.4rem;
+    }
+    
+    .portal-titles h2 {
+        font-size: 1rem;
+    }
+    
+    .govt-logo {
+        width: 60px;
+    }
+}
+</style>
