@@ -1,365 +1,381 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Tenant Verification</title>
+    <title>Sikkim Tenant Verification Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
-
+        
         body {
             background-color: #f5f5f5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
-
-        .login-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
-        }
-
-        .login-box {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
-        }
-
-        h1 {
-            color: #1a73e8;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .role-selector {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .role-btn {
-            flex: 1;
-            padding: 0.75rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        .role-btn.active {
-            background: #1a73e8;
+        
+        .header {
+            background-color: #1E88E5; /* Blue header */
             color: white;
-        }
-
-        .role-btn:not(.active) {
-            background: #e0e0e0;
-            color: #333;
-        }
-
-        input[type="email"] {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-bottom: 1rem;
-            font-size: 1rem;
-        }
-
-        .otp-container {
-            margin: 1rem 0;
-            text-align: center;
-        }
-
-        .otp-inputs {
+            padding: 15px 20px;
             display: flex;
-            gap: 0.5rem;
-            justify-content: center;
-            margin: 1rem 0;
+            align-items: center;
         }
-
-        .otp-input {
-            width: 40px;
+        
+        .header img {
             height: 40px;
-            text-align: center;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1.2rem;
+            margin-right: 15px;
         }
-
-        .action-btn {
-            width: 100%;
-            padding: 0.75rem;
+        
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+        }
+        
+        .sidebar {
+            width: 260px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            margin-right: 20px;
+        }
+        
+        .sidebar h2 {
+            color: #1E88E5;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        
+        .sidebar p {
+            color: #555;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        .main-content {
+            flex: 1;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 4px;
+        }
+        
+        .login-heading {
+            color: #1E88E5;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .role-tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .role-tab {
+            padding: 10px 20px;
+            background-color: #f0f0f0;
             border: none;
-            border-radius: 5px;
-            background: #1a73e8;
-            color: white;
-            font-size: 1rem;
             cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .role-tab:first-child {
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+        
+        .role-tab:last-child {
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .role-tab.active {
+            background-color: #1E88E5;
+            color: white;
+        }
+        
+        .login-form input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary {
+            background-color: #1E88E5;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            margin-bottom: 15px;
         }
-
-        .action-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
+        
+        .btn-primary i {
+            margin-right: 8px;
         }
-
-        .resend-text {
-            text-align: center;
-            margin-top: 1rem;
-            color: #666;
-        }
-
-        .resend-link {
-            color: #1a73e8;
-            text-decoration: none;
+        
+        .btn-secondary {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            border-radius: 4px;
             cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            width: 120px;
+            text-align: center;
+            text-decoration: none;
         }
-
+        
+        .signup-button {
+            text-align: center;
+        }
+        
+        .banner-image {
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
         .alert {
-            padding: 1rem;
-            border-radius: 5px;
-            margin-bottom: 1rem;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
             display: none;
         }
-
+        
         .alert.success {
-            background: #d4edda;
             color: #155724;
+            background-color: #d4edda;
             border: 1px solid #c3e6cb;
         }
-
-        .alert.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+        
+        #otpForm {
+            display: none;
         }
-
-        .sign-up-link {
-            display: block;
-            text-align: center;
-            margin-top: 1rem;
-            text-decoration: none;
-            color: #1a73e8;
+        
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 20px;
+            }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    {% include 'header.html' %}
-
-    <div class="login-container">
-        <div class="login-box">
-            <h1>Login</h1>
+    <header class="header">
+        <img src="{% static 'images/sikkimlogo.png' %}" alt="Sikkim Logo">
+        <h1>Sikkim Tenant Verification Portal</h1>
+    </header>
+    
+    <div class="main-container">
+        <div class="sidebar">
+            <h2>About Tenant Verification Portal</h2>
+            <p>The Sikkim Tenant Verification Portal is a platform designed to streamline the process of tenant verification for landlords, tenants, and law enforcement agencies. It ensures a secure and transparent system for verifying tenant details, reducing risks, and enhancing safety.</p>
+            <p>Our mission is to provide a reliable and efficient solution for tenant verification, making the process smoother for all parties involved.</p>
+        </div>
+        
+        <div class="main-content">
+            <h2 class="login-heading">Login</h2>
             
-            <div id="alertBox" class="alert"></div>
-
-            <div id="emailForm">
-                <div class="role-selector">
-                    <button class="role-btn" data-role="tenant">Tenant</button>
-                    <button class="role-btn active" data-role="home_owner">Home Owner</button>
-                    <button class="role-btn" data-role="police">Police</button>
-                </div>
-
+            <div class="alert" id="alertBox"></div>
+            
+            <!-- Role selection tabs -->
+            <div class="role-tabs">
+                <button class="role-tab active" data-role="tenant">Tenant</button>
+                <button class="role-tab" data-role="home_owner">Home Owner</button>
+                <button class="role-tab" data-role="police">Police</button>
+            </div>
+            
+            <!-- Email Form -->
+            <div id="emailForm" class="login-form">
                 <input type="email" id="email" placeholder="Enter your email" required>
-                
-                <button type="button" id="sendOtpBtn" class="action-btn">
+                <button type="button" id="sendOtpBtn" class="btn-primary">
                     <i class="fas fa-paper-plane"></i> Send OTP
                 </button>
-            </div>
-
-            <div id="otpForm" style="display: none;">
-                <div class="otp-container">
-                    <p>Enter the 6-digit code sent to <span id="otpEmail"></span></p>
-                    
-                    <div class="otp-inputs">
-                        <input type="text" maxlength="1" class="otp-input" pattern="[0-9]">
-                        <input type="text" maxlength="1" class="otp-input" pattern="[0-9]">
-                        <input type="text" maxlength="1" class="otp-input" pattern="[0-9]">
-                        <input type="text" maxlength="1" class="otp-input" pattern="[0-9]">
-                        <input type="text" maxlength="1" class="otp-input" pattern="[0-9]">
-                        <input type="text" maxlength="1" class="otp-input" pattern="[0-9]">
-                    </div>
-
-                    <button type="button" id="verifyOtpBtn" class="action-btn">
-                        <i class="fas fa-check-circle"></i> Verify OTP
-                    </button>
-
-                    <p class="resend-text">
-                        Didn't receive code? <span id="resendOtp" class="resend-link">Resend OTP</span> (<span id="countdown">60</span>s)
-                    </p>
+                
+                <div class="signup-button">
+                    <a href="{% url 'signup_homeowner' %}" class="btn-secondary">Sign Up</a>
                 </div>
             </div>
-
-            <a href="{% url 'signup_homeowner' %}" class="sign-up-link">Sign Up</a>
+            
+            <!-- OTP Form -->
+            <div id="otpForm" class="login-form">
+                <p style="margin-bottom: 15px; text-align: center;">We've sent a verification code to your email.</p>
+                <input type="text" id="otpInput" placeholder="Enter 6-digit code" maxlength="6" required>
+                <button type="button" id="verifyOtpBtn" class="btn-primary">Verify OTP</button>
+                <button type="button" id="backToEmailBtn" class="btn-secondary">Back</button>
+            </div>
+            
+            <!-- Banner image -->
+            <img src="{% static 'images/BuddhaPark.jpg' %}" alt="Buddha Park" class="banner-image">
         </div>
     </div>
-
-    {% include 'footer.html' %}
-
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching
+            const roleTabs = document.querySelectorAll('.role-tab');
+            let selectedRole = 'tenant'; // Default role
+            
+            roleTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    roleTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedRole = this.dataset.role;
+                    console.log("Selected role:", selectedRole);
+                });
+            });
+            
             const emailForm = document.getElementById('emailForm');
             const otpForm = document.getElementById('otpForm');
             const sendOtpBtn = document.getElementById('sendOtpBtn');
             const verifyOtpBtn = document.getElementById('verifyOtpBtn');
-            const roleBtns = document.querySelectorAll('.role-btn');
-            const otpInputs = document.querySelectorAll('.otp-input');
-            const resendOtp = document.getElementById('resendOtp');
-            const countdown = document.getElementById('countdown');
+            const backToEmailBtn = document.getElementById('backToEmailBtn');
             const alertBox = document.getElementById('alertBox');
             
-            let selectedRole = 'home_owner';
-            let countdownInterval;
+            // Store email for verification
             let userEmail = '';
-
-            // Role selection
-            roleBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    roleBtns.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    selectedRole = btn.dataset.role;
-                });
-            });
-
-            // OTP input handling
-            otpInputs.forEach((input, index) => {
-                input.addEventListener('input', () => {
-                    if (input.value.length === 1) {
-                        if (index < otpInputs.length - 1) {
-                            otpInputs[index + 1].focus();
-                        }
-                    }
-                });
-
-                input.addEventListener('keydown', (e) => {
-                    if (e.key === 'Backspace' && !input.value && index > 0) {
-                        otpInputs[index - 1].focus();
-                    }
-                });
-            });
-
-            // Show alert message
-            function showAlert(message, type) {
+            
+            // Function to show alert messages
+            function showAlert(message, type = 'error') {
                 alertBox.textContent = message;
-                alertBox.className = `alert ${type}`;
                 alertBox.style.display = 'block';
+                
+                if (type === 'success') {
+                    alertBox.classList.add('success');
+                } else {
+                    alertBox.classList.remove('success');
+                }
+                
+                // Automatically hide after 5 seconds
                 setTimeout(() => {
                     alertBox.style.display = 'none';
                 }, 5000);
             }
-
-            // Start countdown timer
-            function startCountdown() {
-                let timeLeft = 60;
-                countdown.textContent = timeLeft;
-                resendOtp.style.pointerEvents = 'none';
-                
-                clearInterval(countdownInterval);
-                countdownInterval = setInterval(() => {
-                    timeLeft--;
-                    countdown.textContent = timeLeft;
-                    
-                    if (timeLeft <= 0) {
-                        clearInterval(countdownInterval);
-                        resendOtp.style.pointerEvents = 'auto';
-                    }
-                }, 1000);
-            }
-
+            
             // Send OTP button click handler
-            sendOtpBtn.addEventListener('click', async () => {
-                const email = document.getElementById('email').value.trim();
+            sendOtpBtn.addEventListener('click', function() {
+                const emailInput = document.getElementById('email');
                 
-                if (!email) {
-                    showAlert('Please enter your email address', 'error');
+                // Validate email
+                if (!emailInput.value) {
+                    showAlert('Please enter your email address');
                     return;
                 }
-
-                userEmail = email;
-                const formData = new FormData();
-                formData.append('email', email);
-                formData.append('role', selectedRole);
-
-                try {
-                    const response = await fetch('{% url "send_otp" %}', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    const data = await response.json();
-
-                    if (data.success) {
-                        emailForm.style.display = 'none';
-                        otpForm.style.display = 'block';
-                        document.getElementById('otpEmail').textContent = email;
-                        startCountdown();
-                        showAlert('OTP sent successfully!', 'success');
-                    } else {
-                        showAlert(data.error || 'Failed to send OTP', 'error');
-                    }
-                } catch (error) {
-                    showAlert('An error occurred. Please try again.', 'error');
-                }
-            });
-
-            // Verify OTP button click handler
-            verifyOtpBtn.addEventListener('click', async () => {
-                const otp = Array.from(otpInputs).map(input => input.value).join('');
                 
-                if (otp.length !== 6) {
-                    showAlert('Please enter the complete OTP', 'error');
-                    return;
-                }
-
+                userEmail = emailInput.value;
+                
+                // Send OTP request
                 const formData = new FormData();
                 formData.append('email', userEmail);
-                formData.append('otp', otp);
                 formData.append('role', selectedRole);
-
-                try {
-                    const response = await fetch('{% url "verify_otp" %}', {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    const data = await response.json();
-
+                
+                fetch('{% url "send_otp" %}', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Switch to OTP form
+                        emailForm.style.display = 'none';
+                        otpForm.style.display = 'block';
+                        showAlert('OTP sent successfully!', 'success');
+                    } else {
+                        showAlert(data.error || 'Failed to send OTP. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('An error occurred. Please try again later.');
+                });
+            });
+            
+            // Verify OTP button click handler
+            verifyOtpBtn.addEventListener('click', function() {
+                const otpInput = document.getElementById('otpInput');
+                
+                // Validate OTP
+                if (!otpInput.value || otpInput.value.length !== 6) {
+                    showAlert('Please enter a valid 6-digit OTP');
+                    return;
+                }
+                
+                // Send verification request
+                const formData = new FormData();
+                formData.append('email', userEmail);
+                formData.append('otp', otpInput.value);
+                formData.append('role', selectedRole);
+                
+                fetch('{% url "verify_otp" %}', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
                     if (data.success) {
                         showAlert('Verification successful! Redirecting...', 'success');
+                        
+                        // Redirect based on role
                         setTimeout(() => {
-                            window.location.href = data.redirect_url;
+                            if (selectedRole === 'tenant') {
+                                window.location.href = '{% url "ApplicationStatus" %}';
+                            } else if (selectedRole === 'home_owner') {
+                                window.location.href = '{% url "HomeOwnerdashboard" %}';
+                            } else if (selectedRole === 'police') {
+                                window.location.href = '{% url "Policedashboard" %}';
+                            }
                         }, 1500);
                     } else {
-                        showAlert(data.error || 'Invalid OTP', 'error');
-                        otpInputs.forEach(input => input.value = '');
-                        otpInputs[0].focus();
+                        showAlert(data.error || 'Invalid OTP. Please try again.');
                     }
-                } catch (error) {
-                    showAlert('An error occurred. Please try again.', 'error');
-                }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('An error occurred. Please try again later.');
+                });
             });
-
-            // Resend OTP click handler
-            resendOtp.addEventListener('click', () => {
-                if (resendOtp.style.pointerEvents !== 'none') {
-                    sendOtpBtn.click();
-                }
+            
+            // Back to email button click handler
+            backToEmailBtn.addEventListener('click', function() {
+                otpForm.style.display = 'none';
+                emailForm.style.display = 'block';
             });
         });
     </script>
