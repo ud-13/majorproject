@@ -512,8 +512,9 @@ def process_payment(request):
                 tenant.police_status = 'approved'
                 tenant.save()
 
-                # Send email notification
+                # Send email notifications
                 try:
+                    # Notify tenant
                     send_mail(
                         'Payment Successful - Police Verification',
                         f'Dear {tenant.first_name} {tenant.last_name},\n\nYour payment of ₹{amount} for police verification has been received successfully. Your verification process will be completed soon.',
@@ -521,6 +522,17 @@ def process_payment(request):
                         [tenant.user.email],
                         fail_silently=True,
                     )
+                    
+                    # Notify home owner
+                    home_owner = HomeOwner.objects.filter(phone=tenant.owner_phone_number).first()
+                    if home_owner and home_owner.user:
+                        send_mail(
+                            'Tenant Payment Notification',
+                            f'Dear {home_owner.first_name} {home_owner.last_name},\n\nTenant {tenant.first_name} {tenant.last_name} has completed the payment for police verification.',
+                            settings.DEFAULT_FROM_EMAIL,
+                            [home_owner.user.email],
+                            fail_silently=True,
+                        )
                 except Exception as e:
                     logger.error(f"Email error: {str(e)}")
 
