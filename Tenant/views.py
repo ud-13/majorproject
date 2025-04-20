@@ -459,7 +459,7 @@ def verify_otp(request):
         if role == 'tenant':
             redirect_url = reverse('Registration')
         elif role == 'home_owner':
-            redirect_url = reverse('signup_homeowner') #Corrected typo here
+            redirect_url = reverse('signup_homeowner')
         elif role == 'police':
             redirect_url = reverse('Policedashboard')
 
@@ -522,7 +522,7 @@ def process_payment(request):
                         [tenant.user.email],
                         fail_silently=True,
                     )
-                    
+
                     # Notify home owner
                     home_owner = HomeOwner.objects.filter(phone=tenant.owner_phone_number).first()
                     if home_owner and home_owner.user:
