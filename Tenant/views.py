@@ -341,21 +341,20 @@ def Registration(request):
             }, status=500)
 
 def signup_homeowner(request):
+    if not request.session.get('verified_email'):
+        messages.error(request, 'Please verify your email first')
+        return redirect('login')
+
     if request.method == 'POST':
         email = request.session.get('verified_email')
-        if not email:
-            messages.error(request, 'Please verify your email first')
-            return redirect('login')
-
-        # Get existing user or create new one
         user = User.objects.filter(email=email).first()
+
         if not user:
             user = User.objects.create(email=email, role='home_owner', is_active=True)
         elif user.role != 'home_owner':
             user.role = 'home_owner'
             user.save()
 
-        # Handle form submission
         form = HomeOwnerForm(request.POST, request.FILES)
         if form.is_valid():
             try:
@@ -378,7 +377,9 @@ def signup_homeowner(request):
             print(f"Form errors: {form.errors}")  # Debug print
             messages.error(request, 'Please correct the form errors')
 
-    form = HomeOwnerForm()
+    else:
+        email = request.session.get('verified_email')
+        form = HomeOwnerForm(initial={'email': email})
     return render(request, 'signup_homeowner.html', {'form': form})
 
 def generate_otp():

@@ -199,10 +199,10 @@
                 </div>
             </div>
 
-            <!-- Email field -->
+            <!-- Email field (readonly) -->
             <div class="form-group">
                 <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" required>
+                <input type="email" id="email" name="email" value="{{ form.initial.email }}" readonly>
             </div>
             
             <!-- Role Selection -->
