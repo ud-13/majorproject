@@ -114,9 +114,14 @@ def reject_tenant(request, tenant_id):
     return redirect('HomeOwnerdashboard')
 
 def Policedashboard(request):
-    # For police, show only approved tenants that need police verification
-    tenants = Tenant.objects.filter(status='approved', police_status='pending')
-    return render(request, 'Policedashboard.html', {'tenants': tenants})
+    # Show all tenants that need police verification
+    tenants = Tenant.objects.exclude(status='rejected').order_by('-created_at')
+    return render(request, 'Policedashboard.html', {
+        'tenants': tenants,
+        'approved_count': Tenant.objects.filter(police_status='approved').count(),
+        'rejected_count': Tenant.objects.filter(police_status='rejected').count(),
+        'pending_count': Tenant.objects.filter(police_status='pending').count()
+    })
 
 def police_approve_tenant(request, tenant_id):
     tenant = get_object_or_404(Tenant, id=tenant_id)
