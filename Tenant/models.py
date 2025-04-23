@@ -20,12 +20,12 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
-        
+
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
-            
+
         return self.create_user(email, password, **extra_fields)
 
 
@@ -43,7 +43,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
-    
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
@@ -95,7 +95,7 @@ class Tenant(models.Model):
         on_delete=models.CASCADE,
         related_name='tenants'
     )
-    
+
     # Personal Information
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, blank=True, null=True)
@@ -108,7 +108,7 @@ class Tenant(models.Model):
         max_length=10,
         validators=[RegexValidator(r'^\d{10}$', 'Enter a valid 10-digit phone number')]
     )
-   
+
     # Address Information
     permanent_address = models.TextField()
     village = models.CharField(max_length=100)
@@ -124,11 +124,11 @@ class Tenant(models.Model):
         max_length=10,
         validators=[RegexValidator(r'^\d{10}$', 'Enter a valid 10-digit phone number')]
     )
-    
+
     # Professional Information
     profession = models.CharField(max_length=50, choices=PROFESSION_CHOICES)
     other_profession = models.CharField(max_length=100, blank=True, null=True)
-    
+
     # Employment Status (changed from BooleanField to CharField to match form)
     serving_employee = models.CharField(
         max_length=3,
@@ -141,7 +141,7 @@ class Tenant(models.Model):
         null=True,
         validators=[FileExtensionValidator(['pdf', 'jpg', 'jpeg', 'png'])]
     )
-    
+
     retired_employee = models.CharField(
         max_length=3,
         choices=[('Yes', 'Yes'), ('No', 'No')],
@@ -153,7 +153,7 @@ class Tenant(models.Model):
         null=True,
         validators=[FileExtensionValidator(['pdf', 'jpg', 'jpeg', 'png'])]
     )
-    
+
     # Sikkim Certificate (changed from BooleanField to CharField to match form)
     sikkim_certificate = models.CharField(
         max_length=3,
@@ -166,41 +166,50 @@ class Tenant(models.Model):
         null=True,
         validators=[FileExtensionValidator(['pdf', 'jpg', 'jpeg', 'png'])]
     )
-    
+
     # Additional Information
     previous_police_station = models.CharField(max_length=100, blank=True, null=True)
-    
+
     # Signature
     signature_date = models.DateField()
     signature = models.ImageField(
         upload_to='signatures/',
         validators=[FileExtensionValidator(['jpg', 'jpeg', 'png'])]
     )
-    
+
     # Status Fields
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     police_status = models.CharField(max_length=10, choices=POLICE_STATUS_CHOICES, default='pending')
     police_remark = models.TextField(blank=True, null=True)
-    
+    PAYMENT_STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('paid', 'Paid'),
+    ]
+    payment_status = models.CharField(
+        max_length=10,
+        choices=PAYMENT_STATUS_CHOICES,
+        default='pending'
+    )
+
     # Timestamps
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
     def clean(self):
         errors = {}
-        
+
         if self.profession == 'Others' and not self.other_profession:
             errors['other_profession'] = "Please specify your profession"
-        
+
         if self.serving_employee == 'Yes' and not self.serving_certificate:
             errors['serving_certificate'] = "Please upload a certificate if you are a serving employee"
-        
+
         if self.retired_employee == 'Yes' and not self.retired_certificate:
             errors['retired_certificate'] = "Please upload a certificate if you are a retired employee"
-        
+
         if self.sikkim_certificate == 'Yes' and not self.sikkim_certificate_file:
             errors['sikkim_certificate_file'] = "Please upload a certificate if you hold a Sikkim certificate"
-        
+
         if errors:
             raise ValidationError(errors)
 
@@ -230,7 +239,7 @@ class FamilyMember(models.Model):
     age = models.PositiveIntegerField(blank=True, null=True)
     relationship = models.CharField(max_length=100)
     profession = models.CharField(max_length=100)
-    
+
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -252,7 +261,7 @@ class PreviousResidence(models.Model):
     from_place = models.CharField(max_length=100)
     to_place = models.CharField(max_length=100)
     address = models.TextField()
-    
+
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -271,7 +280,7 @@ class HomeOwner(models.Model):
         on_delete=models.CASCADE, 
         related_name='homeowner_profile'
     )
-    
+
     # Personal Information
     first_name = models.CharField(max_length=100)
     middle_name = models.CharField(max_length=100, blank=True, null=True)
@@ -279,13 +288,13 @@ class HomeOwner(models.Model):
     date_of_birth = models.DateField()
     age = models.PositiveIntegerField(blank=True, null=True)
     photo = models.ImageField(upload_to='homeowner_photos/')
-    
+
     # Contact Information
     phone = models.CharField(
         max_length=15, 
         validators=[RegexValidator(r'^\d{10,15}$', 'Enter a valid phone number')]
     )
-    
+
     # Document Information
     aadhar_card = models.FileField(
         upload_to='aadhar_cards/',
@@ -307,7 +316,7 @@ class HomeOwner(models.Model):
         upload_to='land_parchas/',
         validators=[FileExtensionValidator(['pdf', 'jpg', 'jpeg', 'png'])]
     )
-    
+
     # Timestamps
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)

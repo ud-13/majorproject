@@ -114,8 +114,11 @@ def reject_tenant(request, tenant_id):
     return redirect('HomeOwnerdashboard')
 
 def Policedashboard(request):
-    # Show all tenants that need police verification
-    tenants = Tenant.objects.exclude(status='rejected').order_by('-created_at')
+    # Show only paid and approved tenants that need police verification
+    tenants = Tenant.objects.filter(
+        status='approved',
+        payment_status='paid'
+    ).order_by('-created_at')
     return render(request, 'Policedashboard.html', {
         'tenants': tenants,
         'approved_count': Tenant.objects.filter(police_status='approved').count(),
@@ -334,7 +337,7 @@ def Registration(request):
 
                 return JsonResponse({
                     'success': True,
-                    'message': 'Registration successful',
+                    'message': 'Registration successful. Please complete payment.',
                     'redirect_url': reverse('payment') + f'?tenant_id={tenant.id}'
                 })
 
@@ -515,7 +518,7 @@ def process_payment(request):
 
             # Update tenant status if tenant exists
             if tenant:
-                tenant.police_status = 'approved'
+                tenant.payment_status = 'paid'
                 tenant.save()
 
                 # Send email notifications
